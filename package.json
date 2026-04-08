@@ -2,6 +2,7 @@
   "name": "persona3",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://brucemoseti.github.io/brucemoseti-personal-website",
   "type": "module",
   "scripts": {
     "dev": "vite",
