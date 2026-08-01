@@ -1,5 +1,5 @@
 {
-  "name": "persona3",
+  "name": "brucemoseti-personal-website",
   "private": true,
   "version": "0.0.0",
   "homepage": "https://brucemoseti.github.io/brucemoseti-personal-website",
@@ -12,10 +12,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.28.0",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-router-dom": "^7.14.0"
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
