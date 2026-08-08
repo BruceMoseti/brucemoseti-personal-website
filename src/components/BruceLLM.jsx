@@ -82,7 +82,7 @@ export default function BruceLLM() {
             <p className="llm-kicker">Easter egg</p>
             <h2>BruceLLM</h2>
           </div>
-          <p>A tiny on-site assistant grounded in my resume.</p>
+          <p>A tiny on-site assistant grounded in my profile.</p>
         </header>
 
         <div className="llm-thread" role="log" aria-live="polite">

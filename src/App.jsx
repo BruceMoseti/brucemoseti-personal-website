@@ -14,7 +14,6 @@ const MotionP = motion.p
 const MotionH1 = motion.h1
 const MotionArticle = motion.article
 
-const resumeUrl = `${import.meta.env.BASE_URL}Bruce_Moseti_Resume.pdf`
 const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
 
 const navItems = [
@@ -233,8 +232,8 @@ export default function App() {
               </Magnetic>
             ))}
             <Magnetic>
-              <a className="nav-cta" href={resumeUrl} target="_blank" rel="noreferrer" data-cursor="hover" data-cursor-label="Open">
-                Resume
+              <a className="nav-cta" href="mailto:brucemosetie@gmail.com" data-cursor="hover" data-cursor-label="Email">
+                Contact
               </a>
             </Magnetic>
           </nav>
@@ -264,7 +263,7 @@ export default function App() {
               {item.label}
             </a>
           ))}
-          <a href={resumeUrl} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Resume</a>
+          <a href="mailto:brucemosetie@gmail.com" onClick={() => setMenuOpen(false)}>Contact</a>
         </div>
 
         <main id="content">
@@ -490,11 +489,6 @@ export default function App() {
                 <Magnetic>
                   <a className="btn ghost" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer" data-cursor="hover">
                     GitHub
-                  </a>
-                </Magnetic>
-                <Magnetic>
-                  <a className="btn ghost" href={resumeUrl} target="_blank" rel="noreferrer" data-cursor="hover" data-cursor-label="Open">
-                    Resume
                   </a>
                 </Magnetic>
               </div>
