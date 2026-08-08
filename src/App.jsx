@@ -72,46 +72,86 @@ const projects = [
 const experiences = [
   {
     company: 'NVIDIA',
-    role: 'Performance Engineering Intern, Edge AI',
-    place: 'Santa Clara, CA',
-    date: 'May 2026 — Present',
-    bullets: [
-      'Build tooling for benchmarking and analyzing embedded AI workloads.',
-      'Help teams understand latency, throughput, and utilization trends.',
-      'Work with engineers to improve real-time inference pipelines.',
-    ],
+    role: 'Incoming Performance Engineering Intern, Edge AI',
+    place: 'Internship',
+    date: 'Jan 2026 — Present',
+    bullets: [],
   },
   {
-    company: 'NOKIA',
-    role: 'Software Engineering Co-op',
+    company: 'Nokia',
+    role: 'Optoelectronics Test Development Co-op',
     place: 'Allentown, PA',
-    date: 'Jun 2021 — Aug 2021',
+    date: 'Sep 2025 — Present',
+    bullets: [],
+  },
+  {
+    company: 'CIBM3 Labs',
+    role: 'Research Assistant',
+    place: 'On-site',
+    date: 'Jun 2025 — Sep 2025',
     bullets: [
-      'Automated testing and validation workflows for networking hardware.',
-      'Helped improve release validation with reusable frameworks and CI.',
-      'Supported root-cause analysis across software and hardware issues.',
+      'Supported lab research by building structured datasets from experiments and extracting usable metrics for analysis.',
+      'Automated data cleaning and analysis workflows in Python, improving turnaround time for weekly reporting.',
+      'Presented research outcomes to technical and non-technical audiences.',
+      'Collaborated with researchers to refine experimental objectives, success criteria, and reporting formats.',
     ],
   },
   {
-    company: 'NJIT Space Weather Research',
-    role: 'AI Research Intern',
-    place: 'Newark, NJ',
-    date: 'May 2020 — Aug 2020',
+    company: 'PSEG',
+    role: 'Technical Solutions Intern',
+    place: 'Internship',
+    date: 'Jun 2025 — Aug 2025',
+    bullets: [],
+  },
+  {
+    company: 'NJIT Makerspace',
+    role: 'Advanced Manufacturing and Mechatronics Training Program',
+    place: 'Apprenticeship',
+    date: 'Jun 2025 — Aug 2025',
     bullets: [
-      'Worked on GPU-accelerated computer vision pipelines.',
-      'Benchmarked models and measured end-to-end performance.',
-      'Compared approaches through experiments and literature.',
+      'Hands-on prototyping and fabrication focused on hardware development, electronics assembly, and troubleshooting.',
+      'Worked across sensory integration, hardware development, and mechatronics fundamentals.',
     ],
   },
   {
-    company: 'CIBM3 Lab',
-    role: 'Research Software Engineer Intern',
-    place: 'Newark, NJ',
-    date: 'May 2020 — Aug 2020',
+    company: 'STEM Success Academy',
+    role: 'Student',
+    place: 'Apprenticeship',
+    date: 'Jun 2025 — Jul 2025',
     bullets: [
-      'Built data pipelines and reporting tools for lab systems.',
-      'Supported hardware-in-the-loop testing and measurement.',
-      'Helped improve embedded firmware reliability.',
+      'Studied fundamental engineering topics with emphasis on electrical systems, circuit analysis, and electromechanical integration.',
+      'Prototyped and fabricated in the NJIT Makerspace, focusing on hardware, electronics assembly, and system troubleshooting.',
+      'Participated in research-focused workshops on advanced manufacturing, embedded systems, automation, and applied energy systems.',
+    ],
+  },
+  {
+    company: 'Space Weather',
+    role: 'AI Imaging Analysis and GPU-Accelerated Systems',
+    place: 'NVIDIA DeepSun Project · Internship',
+    date: 'Apr 2025 — Jun 2025',
+    bullets: [
+      'Analyzed imaging and performance datasets to identify patterns, bottlenecks, and improvement opportunities.',
+      'Built automated Python reporting tools to track key metrics and support research priorities.',
+      'Evaluated emerging AI and GPU use cases through research, data analysis, and stakeholder feedback.',
+      'Presented findings through technical and business-facing presentations.',
+    ],
+  },
+  {
+    company: 'EN-POWER GROUP',
+    role: 'Mechanical Design Engineer Intern',
+    place: 'Internship',
+    date: 'Dec 2024 — Jun 2025',
+    bullets: [],
+  },
+  {
+    company: 'Infusing Research as Pedagogy',
+    role: 'Undergraduate Research Assistant, Solar Energy Irrigation System',
+    place: 'Apprenticeship',
+    date: 'Dec 2023 — Jun 2024',
+    bullets: [
+      'Designed and tested a system integrating sensors, control logic, and performance data collection for irrigation automation.',
+      'Analyzed operational data across test scenarios to evaluate stability, efficiency, and reliability.',
+      'Documented design tradeoffs and iteration results to support improvements to performance and usability.',
     ],
   },
 ]
@@ -387,11 +427,11 @@ export default function App() {
                 return (
                   <MotionArticle
                     className={`experience-item${open ? ' open' : ''}`}
-                    key={item.company}
+                    key={`${item.company}-${item.role}`}
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.65, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.65, delay: Math.min(index, 6) * 0.04, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <button
                       type="button"
@@ -417,12 +457,14 @@ export default function App() {
                       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                     >
                       <div className="experience-panel-inner">
-                        <p className="experience-place">{item.place}</p>
-                        <ul>
-                          {item.bullets.map((bullet) => (
-                            <li key={bullet}>{bullet}</li>
-                          ))}
-                        </ul>
+                        {item.place ? <p className="experience-place">{item.place}</p> : null}
+                        {item.bullets.length > 0 ? (
+                          <ul>
+                            {item.bullets.map((bullet) => (
+                              <li key={bullet}>{bullet}</li>
+                            ))}
+                          </ul>
+                        ) : null}
                       </div>
                     </MotionDiv>
                   </MotionArticle>
