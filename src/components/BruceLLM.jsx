@@ -7,11 +7,19 @@ const knowledge = [
   },
   {
     keys: ['nvidia', 'internship', 'edge', 'work', 'experience'],
-    answer: 'I’ve interned in performance engineering, test automation, and research — mostly building tools and learning how systems behave under load.',
+    answer: 'I’ve worked across NVIDIA, Nokia, research labs, utilities, and makerspace programs — mostly building, testing, and learning in applied engineering settings.',
   },
   {
     keys: ['nokia'],
-    answer: 'At Nokia I worked on software for testing and validation, helping make engineering workflows smoother.',
+    answer: 'At Nokia I’m an Optoelectronics Test Development Co-op in Allentown, PA.',
+  },
+  {
+    keys: ['pseg'],
+    answer: 'At PSEG I was a Technical Solutions Intern.',
+  },
+  {
+    keys: ['cibm', 'research assistant'],
+    answer: 'At CIBM3 Labs I supported research with datasets, Python analysis workflows, and clear presentations of outcomes.',
   },
   {
     keys: ['project', 'cueai', 'rootline', 'deepsun'],
