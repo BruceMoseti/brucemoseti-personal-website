@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:watch": "node scripts/watch-build.mjs",
+    "deploy": "node scripts/deploy-pages.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

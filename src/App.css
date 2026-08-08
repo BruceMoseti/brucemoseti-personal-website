@@ -807,9 +807,20 @@ main {
   border-top: 1px solid var(--line);
 }
 
-/* Custom cursor */
+/* Custom cursor — avoid universal * selector for paint cost */
 .has-custom-cursor,
-.has-custom-cursor * {
+.has-custom-cursor body {
+  cursor: none;
+}
+
+.has-custom-cursor a,
+.has-custom-cursor button,
+.has-custom-cursor input,
+.has-custom-cursor textarea,
+.has-custom-cursor summary,
+.has-custom-cursor label,
+.has-custom-cursor [data-cursor],
+.has-custom-cursor [role='button'] {
   cursor: none !important;
 }
 
@@ -819,7 +830,8 @@ main {
   z-index: 80;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.18s ease;
+  contain: layout style;
 }
 
 .cursor-root.is-visible {
@@ -834,6 +846,8 @@ main {
   left: 0;
   border-radius: 999px;
   will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(-100px, -100px, 0);
 }
 
 .cursor-dot {
@@ -848,7 +862,7 @@ main {
   height: 34px;
   margin: -17px 0 0 -17px;
   border: 1px solid rgba(23, 28, 34, 0.55);
-  transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  transition: width 0.18s ease, height 0.18s ease, margin 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 
 .cursor-label {
@@ -863,12 +877,13 @@ main {
   font-weight: 600;
   letter-spacing: 0.04em;
   opacity: 0;
-  transform: scale(0.7);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  scale: 0.72;
+  transition: opacity 0.16s ease, scale 0.16s ease;
 }
 
 .cursor-label.show {
   opacity: 1;
+  scale: 1;
 }
 
 .cursor-root.mode-hover .cursor-ring {

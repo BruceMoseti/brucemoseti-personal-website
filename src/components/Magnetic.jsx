@@ -10,8 +10,8 @@ export default function Magnetic({ children, strength = 0.28, className = '' }) 
   const ref = useRef(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
-  const springX = useSpring(x, { stiffness: 260, damping: 18, mass: 0.4 })
-  const springY = useSpring(y, { stiffness: 260, damping: 18, mass: 0.4 })
+  const springX = useSpring(x, { stiffness: 420, damping: 28, mass: 0.25 })
+  const springY = useSpring(y, { stiffness: 420, damping: 28, mass: 0.25 })
 
   if (reduced || touch) {
     return <div className={className}>{children}</div>
