@@ -3,31 +3,31 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 const knowledge = [
   {
     keys: ['who', 'about', 'yourself', 'bio'],
-    answer: 'I’m Bruce Moseti — an Electrical Engineering student at NJIT and a Performance Engineering Intern on NVIDIA Edge AI. I focus on measuring and improving embedded AI systems.',
+    answer: 'I’m Bruce Moseti — an Electrical Engineering student at NJIT who builds software around systems, automation, and applied AI.',
   },
   {
-    keys: ['nvidia', 'jetson', 'internship', 'edge'],
-    answer: 'At NVIDIA I build benchmarking and automation for Jetson platforms, analyzing 200K+ GPU workload runs and profiling CUDA / cuDNN / TensorRT pipelines.',
+    keys: ['nvidia', 'internship', 'edge', 'work', 'experience'],
+    answer: 'I’ve interned in performance engineering, test automation, and research — mostly building tools and learning how systems behave under load.',
   },
   {
-    keys: ['nokia', 'optical', 'trosa'],
-    answer: 'At Nokia I improved test and manufacturing workflows by about 45% with Python, C#, PowerShell automation, and GitLab CI/CD for optical networking validation.',
+    keys: ['nokia'],
+    answer: 'At Nokia I worked on software for testing and validation, helping make engineering workflows smoother.',
   },
   {
-    keys: ['project', 'cueai', 'rootline', 'deepsun', 'work'],
-    answer: 'Selected projects include CueAI (physics-informed simulation), Rootline (incident intelligence), an energy-grid dashboard, and DeepSun (GPU edge inference with ~40% latency reduction).',
+    keys: ['project', 'cueai', 'rootline', 'deepsun'],
+    answer: 'My projects span simulation, systems tooling, dashboards, and edge inference experiments. Check the Work section for links.',
   },
   {
-    keys: ['skill', 'stack', 'cuda', 'python', 'tech'],
-    answer: 'Core stack: Python, C++, CUDA, TensorRT, PyTorch, embedded systems, React/TypeScript, and data tooling for dashboards and automation.',
+    keys: ['skill', 'stack', 'tech'],
+    answer: 'I work across Python, C++, and web tools, with interest in embedded systems, AI tooling, and automation.',
   },
   {
-    keys: ['contact', 'email', 'reach', 'hire'],
-    answer: 'Email brucemosetie@gmail.com — or use LinkedIn / GitHub from the Contact section. Happy to talk Edge AI, embedded systems, and performance tooling.',
+    keys: ['contact', 'email', 'reach', 'hire', 'linkedin'],
+    answer: 'Email brucemosetie@gmail.com, or use LinkedIn and GitHub in the Contact section.',
   },
   {
     keys: ['school', 'njit', 'education'],
-    answer: 'I’m pursuing a B.S. in Electrical Engineering at NJIT (expected June 2028) and have been on the Dean’s List for Fall 2025, Spring 2025, and Spring 2026.',
+    answer: 'I’m studying Electrical Engineering at NJIT.',
   },
 ]
 
@@ -35,17 +35,17 @@ function replyFor(input) {
   const text = input.toLowerCase()
   const hit = knowledge.find((item) => item.keys.some((key) => text.includes(key)))
   if (hit) return hit.answer
-  return 'Ask me about NVIDIA work, projects like CueAI, skills, school, or how to get in touch.'
+  return 'Ask me about my background, projects, skills, or how to get in touch.'
 }
 
 export default function BruceLLM() {
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState([
-    { role: 'assistant', text: 'Hi — I’m BruceLLM. Ask about my experience, projects, or stack.' },
+    { role: 'assistant', text: 'Hi — I’m BruceLLM. Ask about my background, projects, or how to reach me.' },
   ])
   const endRef = useRef(null)
-  const suggestions = useMemo(() => ['Who are you?', 'NVIDIA work?', 'Best projects?', 'How to contact?'], [])
+  const suggestions = useMemo(() => ['Who are you?', 'Experience?', 'Projects?', 'How to contact?'], [])
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
