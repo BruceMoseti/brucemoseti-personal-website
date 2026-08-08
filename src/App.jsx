@@ -1,503 +1,522 @@
-import { createElement, useMemo, useState } from 'react'
-import {
-  Activity,
-  ArrowUpRight,
-  BadgeCheck,
-  BriefcaseBusiness,
-  ChevronRight,
-  Code2,
-  Contact,
-  Cpu,
-  Database,
-  Factory,
-  FileText,
-  Gauge,
-  GitBranch,
-  GraduationCap,
-  Link,
-  Mail,
-  MapPin,
-  Moon,
-  Sun,
-  Terminal,
-  Workflow,
-  Wrench,
-} from 'lucide-react'
-import avatarArt from './assets/mainm2.jpeg'
-import cardArt from './assets/card.png'
-import heroArt from './assets/hero.png'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
+import CustomCursor from './components/CustomCursor'
+import SmoothScroll from './components/SmoothScroll'
+import Preloader from './components/Preloader'
+import Magnetic from './components/Magnetic'
+import BruceLLM from './components/BruceLLM'
+import previewClip from './assets/circletransition.mp4'
 import './App.css'
 
+const MotionDiv = motion.div
+const MotionA = motion.a
+const MotionP = motion.p
+const MotionH1 = motion.h1
+const MotionArticle = motion.article
+
 const resumeUrl = `${import.meta.env.BASE_URL}Bruce_Moseti_Resume.pdf`
-
-const links = [
-  { label: 'Email', href: 'mailto:brucemosetie@gmail.com', icon: Mail },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/brucemoseti', icon: Contact },
-  { label: 'GitHub', href: 'https://github.com/BruceMoseti', icon: GitBranch },
-]
-
-const profileChips = ['NVIDIA Edge AI', 'NJIT EE', 'CUDA / TensorRT', 'Mechatronics']
-
-const profileStats = [
-  { value: '200K+', label: 'GPU workload runs analyzed' },
-  { value: '45%', label: 'workflow efficiency lift' },
-  { value: '40%', label: 'inference latency reduction' },
-  { value: '2028', label: 'B.S. Electrical Engineering' },
-]
+const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
 
 const navItems = [
-  ['About', '#about'],
-  ['Experience', '#experience'],
-  ['Projects', '#projects'],
-  ['Skills', '#skills'],
-  ['Contact', '#contact'],
+  { label: 'Work', href: '#work' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'About', href: '#about' },
+  { label: 'Contact', href: '#contact' },
 ]
 
-const aboutBullets = [
-  'Electrical Engineering student at New Jersey Institute of Technology, expected June 2028.',
-  'Performance Engineering Intern on NVIDIA Edge AI, focused on Jetson benchmarking, automation, and inference profiling.',
-  'Experience across GPU acceleration, embedded systems, optical manufacturing test automation, energy dashboards, and mechatronics training.',
-  'I care about engineering telemetry: making latency, throughput, memory, and hardware behavior visible enough to improve.',
+const projects = [
+  {
+    title: 'CueAI',
+    role: 'Physics-informed AI simulation',
+    year: '2026',
+    copy: 'Predictive billiards simulation combining numerical methods, Monte Carlo sampling, and reusable object-oriented software.',
+    tags: ['Python', 'C++', 'PyTorch', 'NumPy'],
+    href: 'https://github.com/BruceMoseti/cueai',
+    accent: 'cue',
+    media: 'video',
+  },
+  {
+    title: 'Rootline',
+    role: 'Live incident intelligence',
+    year: '2026',
+    copy: 'Turns scattered operational signals into grounded context so engineers can move from noise to a usable incident picture.',
+    tags: ['Python', 'Systems', 'Evidence'],
+    href: 'https://github.com/BruceMoseti/rootline',
+    accent: 'root',
+    media: 'grid',
+  },
+  {
+    title: 'Energy Grid Dashboard',
+    role: 'Time-series analytics',
+    year: '2025',
+    copy: 'Visualizes grid performance, outage patterns, and usage anomalies with practical operator workflows.',
+    tags: ['Python', 'Plotly Dash', 'Analytics'],
+    href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
+    accent: 'grid',
+    media: 'bars',
+  },
+  {
+    title: 'DeepSun',
+    role: 'GPU-accelerated edge inference',
+    year: '2025',
+    copy: 'Profiled and optimized CUDA / PyTorch / DeepStream pipelines, cutting real-time inference latency by about 40%.',
+    tags: ['CUDA', 'PyTorch', 'DeepStream'],
+    href: 'https://github.com/BruceMoseti',
+    accent: 'sun',
+    media: 'orbit',
+  },
 ]
 
 const experiences = [
   {
     company: 'NVIDIA',
     role: 'Performance Engineering Intern, Edge AI',
-    location: 'Santa Clara, CA',
-    date: 'May 2026 - Present',
-    icon: Cpu,
-    summary: 'Benchmarking and profiling embedded AI workloads on Jetson platforms.',
-    stack: ['Python', 'CUDA', 'cuDNN', 'TensorRT', 'Jetson'],
+    place: 'Santa Clara, CA',
+    date: 'May 2026 — Present',
     bullets: [
-      'Developed Python benchmarking and automation tools for NVIDIA Jetson embedded AI platforms across 200,000+ GPU workload runs.',
-      'Automated latency, throughput, memory, and GPU utilization analysis to accelerate performance regression detection.',
-      'Profiled CUDA, cuDNN, and TensorRT inference pipelines to identify bottlenecks in real-time AI workloads.',
+      'Built Python benchmarking and automation for Jetson platforms across 200,000+ GPU workload runs.',
+      'Automated latency, throughput, memory, and GPU utilization analysis to catch regressions faster.',
+      'Profiled CUDA, cuDNN, and TensorRT inference pipelines to find bottlenecks in real-time AI workloads.',
     ],
   },
   {
     company: 'NOKIA',
     role: 'Software Engineering: Test Development Co-op',
-    location: 'Allentown, PA',
-    date: 'Jun 2021 - Aug 2021',
-    icon: Wrench,
-    summary: 'Built automation and validation workflows for optical networking manufacturing tests.',
-    stack: ['Python', 'C#', 'PowerShell', 'GitLab CI/CD', 'TROSA'],
+    place: 'Allentown, PA',
+    date: 'Jun 2021 — Aug 2021',
     bullets: [
       'Improved engineering workflow efficiency by 45% with Python, C#, and PowerShell automation for TROSA validation.',
       'Designed reusable testing frameworks and GitLab CI/CD pipelines for optical networking system validation.',
-      'Analyzed manufacturing and test datasets to support root-cause analysis across hardware-software issues.',
+      'Analyzed manufacturing and test datasets to support hardware-software root-cause analysis.',
     ],
   },
   {
     company: 'NJIT Space Weather Research',
     role: 'AI Research Intern',
-    location: 'Newark, NJ',
-    date: 'May 2020 - Aug 2020',
-    icon: Code2,
-    summary: 'Applied GPU acceleration to computer vision and space-weather research workloads.',
-    stack: ['Python', 'CUDA', 'PyTorch', 'DeepStream', 'Computer Vision'],
+    place: 'Newark, NJ',
+    date: 'May 2020 — Aug 2020',
     bullets: [
       'Engineered GPU-accelerated computer vision pipelines with Python, CUDA, PyTorch, and NVIDIA DeepStream.',
       'Reduced real-time inference latency by approximately 40% through benchmarking and deployment optimization.',
-      'Used research literature, LLMs, and experimental benchmarking to compare deep learning approaches.',
+      'Compared deep learning approaches using research literature, LLMs, and experimental measurement.',
     ],
   },
   {
     company: 'CIBM3 Lab',
     role: 'Research Software Engineer Intern',
-    location: 'Newark, NJ',
-    date: 'May 2020 - Aug 2020',
-    icon: BriefcaseBusiness,
-    summary: 'Developed data and embedded-firmware tooling for research instrumentation.',
-    stack: ['Python', 'SQL', 'Dashboards', 'Firmware', 'HIL Testing'],
+    place: 'Newark, NJ',
+    date: 'May 2020 — Aug 2020',
     bullets: [
       'Built Python and SQL pipelines that automated infrastructure reporting and dashboard updates.',
-      'Ran hardware-in-the-loop tests to reproduce power disturbances and measure system response under fault conditions.',
-      'Implemented ADC moving-average filtering and debounce logic to reduce false embedded-system triggers.',
+      'Ran hardware-in-the-loop tests to reproduce power disturbances and measure system response.',
+      'Implemented ADC moving-average filtering and debounce logic to reduce false embedded triggers.',
     ],
   },
 ]
 
-const projects = [
-  {
-    title: 'CueAI',
-    meta: 'Physics-informed AI billiards simulation',
-    date: '2026',
-    type: 'AI simulation',
-    href: 'https://github.com/BruceMoseti/cueai',
-    tags: ['Python', 'C++', 'PyTorch', 'NumPy'],
-    copy: 'Built a predictive simulation platform using numerical methods, statistical analysis, and reusable object-oriented software.',
-  },
-  {
-    title: 'Rootline',
-    meta: 'Live incident intelligence',
-    date: '2026',
-    type: 'Systems tool',
-    href: 'https://github.com/BruceMoseti/rootline',
-    tags: ['Python', 'Evidence', 'Systems'],
-    copy: 'A grounded incident-intelligence project focused on turning scattered signals into usable operational context.',
-  },
-  {
-    title: 'Energy Grid Performance Dashboard',
-    meta: 'Time-series analytics dashboard',
-    date: '2025',
-    type: 'Data product',
-    href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
-    tags: ['Python', 'Plotly Dash', 'Analytics'],
-    copy: 'Visualizes grid performance, outage patterns, and usage anomalies with practical dashboard workflows.',
-  },
-  {
-    title: 'Advanced Manufacturing and Mechatronics',
-    meta: 'NJIT Makerspace training program',
-    date: '2025',
-    type: 'Training archive',
-    href: 'https://github.com/BruceMoseti/NJIT-Makerspace-Advanced-Manufacturing-and-Mechatronics-Training-Program',
-    tags: ['Mechatronics', 'Manufacturing', 'Documentation'],
-    copy: 'Documents manufacturing and mechatronics training work across shop, automation, and engineering fundamentals.',
-  },
-  {
-    title: 'DeepSun',
-    meta: 'GPU-accelerated edge AI inference',
-    date: '2025',
-    type: 'Research system',
-    href: 'https://github.com/BruceMoseti',
-    tags: ['CUDA', 'PyTorch', 'DeepStream'],
-    copy: 'Optimized GPU-accelerated inference and reduced real-time latency by approximately 40% through profiling.',
-  },
-  {
-    title: 'AI Imaging Analysis',
-    meta: 'Biomedical machine learning tools',
-    date: '2025',
-    type: 'Research tooling',
-    href: 'https://github.com/BruceMoseti',
-    tags: ['OpenCV', 'ML', 'Python'],
-    copy: 'Processed traumatic brain injury imaging datasets and evaluated predictive model performance.',
-  },
+const skills = [
+  { group: 'Languages', items: ['C++', 'Python', 'Java', 'TypeScript', 'SQL'] },
+  { group: 'AI & Systems', items: ['CUDA', 'TensorRT', 'PyTorch', 'DeepStream', 'Embedded'] },
+  { group: 'Web & Tools', items: ['React', 'Node.js', 'Git', 'Docker', 'AWS'] },
 ]
 
-const skillGroups = [
-  ['Languages', ['C++', 'Java', 'Python', 'R', 'HTML5', 'CSS3', 'JavaScript', 'TypeScript', 'SQL', 'Erlang'], Terminal],
-  ['AI and Systems', ['CUDA', 'cuDNN', 'PyTorch', 'TensorFlow', 'NVIDIA DeepStream', 'Embedded Systems'], Gauge],
-  ['Web and Backend', ['React.js', 'Node.js', 'Next.js', 'Express.js', 'Django', 'Flask', 'GraphQL', 'REST APIs'], Workflow],
-  ['Tools and Data', ['Git', 'Docker', 'Jenkins', 'MongoDB', 'MySQL', 'Tableau', 'Power BI', 'AWS'], Database],
-]
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
+}
 
-function NameMark() {
-  return (
-    <svg className="name-mark" viewBox="0 0 330 158" role="img" aria-label="Bruce Moseti">
-      <defs>
-        <pattern id="dot-grid" patternUnits="userSpaceOnUse" width="18" height="18">
-          <circle cx="9" cy="9" r="1.2" />
-        </pattern>
-      </defs>
-      <ellipse className="name-dots" cx="166" cy="78" rx="158" ry="62" transform="rotate(7 166 78)" />
-      <ellipse className="name-ring" cx="166" cy="78" rx="142" ry="42" transform="rotate(-10 166 78)" />
-      <path className="sparkle sparkle-one" d="M275 28l5 14 14 5-14 5-5 14-5-14-14-5 14-5z" />
-      <path className="sparkle sparkle-two" d="M64 116l4 12 12 4-12 4-4 12-4-12-12-4 12-4z" />
-      <g transform="rotate(-4 165 82)">
-        <text x="50%" y="54%" textAnchor="middle" dominantBaseline="middle" className="name-shadow">
-          Bruce
-        </text>
-        <text x="50%" y="54%" textAnchor="middle" dominantBaseline="middle" className="name-stroke">
-          Bruce
-        </text>
-        <text x="50%" y="54%" textAnchor="middle" dominantBaseline="middle" className="name-fill">
-          Bruce
-        </text>
-        <text x="50%" y="81%" textAnchor="middle" dominantBaseline="middle" className="name-small">
-          Moseti
-        </text>
-      </g>
-    </svg>
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+}
+
+function ProjectMedia({ project, active }) {
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return undefined
+    if (active) {
+      const play = video.play()
+      if (play?.catch) play.catch(() => {})
+    } else {
+      video.pause()
+      video.currentTime = 0
+    }
+    return undefined
+  }, [active])
+
+  if (project.media === 'video') {
+return (
+    <div className={`project-media type-video tone-${project.accent}${active ? ' active' : ''}`}>
+      <video ref={videoRef} muted loop playsInline preload="metadata" src={previewClip} />
+      <div className="media-veil" />
+    </div>
   )
 }
 
-function IconLink({ href, label, icon }) {
-  return (
-    <a className="icon-link" href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel="noreferrer" aria-label={label}>
-      {createElement(icon, { size: 20, strokeWidth: 1.9 })}
-      <span>{label}</span>
-    </a>
-  )
-}
-
-function Section({ id, title, kicker, note, children }) {
-  return (
-    <section id={id} className="section-block">
-      <div className="section-heading">
-        <span>{kicker}</span>
-        <h2>{title}</h2>
+return (
+    <div
+      className={`project-media type-${project.media} tone-${project.accent}${active ? ' active' : ''}`}
+      aria-hidden="true"
+    >
+      <div className="media-orb one" />
+      <div className="media-orb two" />
+      <div className="media-grid" />
+      <div className="media-bars">
+        <span /><span /><span /><span /><span />
       </div>
-      {note ? <p className="section-note">{note}</p> : null}
-      <div className="rule" />
-      {children}
-    </section>
+    </div>
   )
 }
 
-function ExperienceItem({ item, open }) {
-  return (
-    <details className="experience-item" defaultOpen={open}>
-      <summary>
-        <span className="experience-icon">
-          {createElement(item.icon, { size: 20 })}
-        </span>
-        <span className="experience-copy">
-          <span className="experience-title">
-            <strong>{item.company}</strong>
-            <ChevronRight size={16} />
-          </span>
-          <span>{item.role}</span>
-          <span className="experience-summary">{item.summary}</span>
-          <span className="experience-place">
-            <MapPin size={13} />
-            {item.location}
-          </span>
-        </span>
-        <time>{item.date}</time>
-      </summary>
-      <ul>
-        {item.bullets.map((bullet) => (
-          <li key={bullet}>{bullet}</li>
-        ))}
-      </ul>
-      <div className="experience-stack">
-        {item.stack.map((tool) => (
-          <span key={tool}>{tool}</span>
-        ))}
-      </div>
-    </details>
-  )
-}
-
-function ProjectCard({ project, index }) {
-  return (
-    <a className={`project-card${index < 2 ? ' featured' : ''}`} href={project.href} target="_blank" rel="noreferrer">
-      <span className="project-topline">
-        <span className="project-number">{String(index + 1).padStart(2, '0')}</span>
-        <span>{project.date}</span>
-      </span>
-      <span className="project-meta">{project.type}</span>
-      <h3>{project.title}</h3>
-      <span className="project-subtitle">{project.meta}</span>
-      <p>{project.copy}</p>
-      <span className="tag-row">
-        {project.tags.map((tag) => (
-          <span key={tag}>{tag}</span>
-        ))}
-      </span>
-      <span className="project-action">
-        View project
-        <ArrowUpRight size={14} />
-      </span>
-    </a>
-  )
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 28, restDelta: 0.001 })
+  return <MotionDiv className="scroll-progress" style={{ scaleX }} />
 }
 
 export default function App() {
-  const [isDark, setIsDark] = useState(true)
-  const themeLabel = isDark ? 'light' : 'dark'
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [openExperience, setOpenExperience] = useState(0)
+  const [ready, setReady] = useState(false)
+  const [hoveredProject, setHoveredProject] = useState(null)
+  const [navSolid, setNavSolid] = useState(false)
+  const heroRef = useRef(null)
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 120])
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.15])
 
-  const themeClass = useMemo(() => (isDark ? 'theme-dark' : 'theme-light'), [isDark])
+  useEffect(() => {
+    const onScroll = () => setNavSolid(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
 
   return (
-    <div className={`portfolio ${themeClass}`}>
-      <a className="skip-link" href="#content">Skip to content</a>
-      <aside className="intro-panel">
-        <button className="theme-toggle" type="button" onClick={() => setIsDark((value) => !value)} aria-label={`Switch to ${themeLabel} mode`}>
-          {isDark ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
+    <SmoothScroll>
+      <div className={`site${ready ? ' is-ready' : ''}`}>
+        <Preloader onDone={() => setReady(true)} />
+        <CustomCursor />
+        <ScrollProgress />
+        <div className="noise" aria-hidden="true" />
+        <div className="blob blob-a" aria-hidden="true" />
+        <div className="blob blob-b" aria-hidden="true" />
+        <div className="blob blob-c" aria-hidden="true" />
 
-        <div className="intro-top">
-          <NameMark />
-          <p className="intro-kicker">Electrical Engineering @ NJIT</p>
-          <div className="profile-chip-row" aria-label="Portfolio focus areas">
-            {profileChips.map((chip) => (
-              <span key={chip}>{chip}</span>
+        <a className="skip-link" href="#content">Skip to content</a>
+
+        <header className={`topbar${navSolid ? ' solid' : ''}`}>
+          <Magnetic>
+            <a className="brand" href="#top" data-cursor="hover" aria-label="Bruce Moseti home">
+              <span className="brand-mark">B</span>
+              <span className="brand-name">Bruce Moseti</span>
+            </a>
+          </Magnetic>
+
+          <nav className="desktop-nav" aria-label="Primary">
+            {navItems.map((item) => (
+              <Magnetic key={item.href} strength={0.35}>
+                <a href={item.href} data-cursor="hover">{item.label}</a>
+              </Magnetic>
             ))}
-          </div>
-          <p className="intro-copy">
-            Performance engineering, embedded AI, and automation work for teams that need cleaner measurements and faster iteration.
-          </p>
-
-          <div className="link-row">
-            {links.map((link) => (
-              <IconLink key={link.label} {...link} />
-            ))}
-          </div>
-
-          <nav className="nav-list" aria-label="Main sections">
-            {navItems.map(([label, href]) => (
-              <a key={label} href={href}>{label}</a>
-            ))}
-          </nav>
-        </div>
-
-        <div className="avatar-stage">
-          <div className="speech-bubble">Edge AI, mechatronics, automation, and systems work.</div>
-          <div className="avatar-frame">
-            <img src={avatarArt} alt="Stylized avatar artwork" />
-          </div>
-          <img className="floating-card" src={cardArt} alt="" aria-hidden="true" />
-        </div>
-
-        <p className="built-note">
-          Built by <strong>Bruce Moseti</strong>
-        </p>
-      </aside>
-
-      <main className="content-panel" id="content">
-        <section className="hero-section" id="home">
-          <div className="hero-photo">
-            <img src={avatarArt} alt="Stylized avatar artwork" />
-          </div>
-          <div>
-            <div className="status-row">
-              <span>
-                <Activity size={14} />
-                Available for engineering roles
-              </span>
-              <span>
-                <Factory size={14} />
-                Mechatronics + manufacturing
-              </span>
-            </div>
-            <p className="eyebrow">Portfolio / Edge AI / Embedded systems</p>
-            <h1>Hi, I&apos;m Bruce.</h1>
-            <p className="lead">
-              I turn hardware and AI performance problems into measurable systems: benchmarks, dashboards, test automation, and
-              pipelines that make engineering decisions clearer.
-            </p>
-            <div className="metric-grid" aria-label="Selected outcomes">
-              {profileStats.map((stat) => (
-                <div className="metric-card" key={stat.label}>
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </div>
-              ))}
-            </div>
-            <div className="hero-actions">
-              <a className="button-link" href={resumeUrl} target="_blank" rel="noreferrer">
-                <FileText size={17} />
+            <Magnetic>
+              <a className="nav-cta" href={resumeUrl} target="_blank" rel="noreferrer" data-cursor="hover" data-cursor-label="Open">
                 Resume
               </a>
-              <a className="button-link" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer">
-                <GitBranch size={17} />
-                GitHub
-              </a>
-              <a className="button-link primary" href="mailto:brucemosetie@gmail.com">
-                <Mail size={17} />
-                Contact
-              </a>
+            </Magnetic>
+          </nav>
+
+          <button
+            className={`menu-toggle${menuOpen ? ' open' : ''}`}
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            data-cursor="hover"
+            onClick={() => setMenuOpen((value) => !value)}
+          >
+            <span />
+            <span />
+          </button>
+        </header>
+
+        <div id="mobile-nav" className={`mobile-nav${menuOpen ? ' open' : ''}`}>
+          {navItems.map((item, index) => (
+            <a
+              key={item.href}
+              href={item.href}
+              style={{ transitionDelay: `${index * 40}ms` }}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.label}
+            </a>
+          ))}
+          <a href={resumeUrl} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Resume</a>
+        </div>
+
+        <main id="content">
+          <section className="hero" id="top" ref={heroRef}>
+            <MotionDiv className="hero-copy" style={{ y: heroY, opacity: heroOpacity }}>
+              <MotionDiv variants={stagger} initial="hidden" animate={ready ? 'show' : 'hidden'}>
+                <MotionP className="hero-kicker" variants={fadeUp}>
+                  Electrical Engineering · NJIT · Edge AI
+                </MotionP>
+                <MotionH1 variants={fadeUp} className="hero-title">
+                  <span>Bruce</span>
+                  <span>Moseti</span>
+                </MotionH1>
+                <MotionP className="hero-lead" variants={fadeUp}>
+                  I design measurement into machines — benchmarking, profiling, and automation that make
+                  Edge AI systems clearer, faster, and easier to trust.
+                </MotionP>
+                <MotionDiv className="hero-actions" variants={fadeUp}>
+                  <Magnetic>
+                    <a className="btn primary" href="#work" data-cursor="hover" data-cursor-label="Scroll">
+                      View work
+                    </a>
+                  </Magnetic>
+                  <Magnetic>
+                    <a className="btn ghost" href="mailto:brucemosetie@gmail.com" data-cursor="hover" data-cursor-label="Email">
+                      Get in touch
+                    </a>
+                  </Magnetic>
+                </MotionDiv>
+              </MotionDiv>
+            </MotionDiv>
+
+            <div className="hero-stage" aria-hidden="true">
+              <div className="hero-ring" />
+              <div className="hero-wave" />
             </div>
-          </div>
-        </section>
+          </section>
 
-        <Section
-          id="about"
-          title="About Me"
-          kicker="01"
-          note="A practical engineering profile: software enough to automate, hardware enough to measure, and research enough to test assumptions."
-        >
-          <ul className="about-list">
-            {aboutBullets.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </Section>
-
-        <Section
-          id="experience"
-          title="Experience"
-          kicker="02"
-          note="Concise resume-style entries with expandable details so the page stays scannable."
-        >
-          <div className="experience-list">
-            {experiences.map((item, index) => (
-              <ExperienceItem key={item.company} item={item} open={index < 2} />
-            ))}
-          </div>
-        </Section>
-
-        <Section id="education" title="Education" kicker="03" note="Academic foundation in electrical engineering, embedded systems, software, and applied math.">
-          <div className="education-card">
-            <span className="education-icon">
-              <GraduationCap size={22} />
-            </span>
-            <div>
-              <h3>New Jersey Institute of Technology</h3>
-              <p>Bachelor of Science in Electrical Engineering, expected June 2028.</p>
-              <p>Dean&apos;s List: Fall 2025, Spring 2025, Spring 2026.</p>
-              <p>Coursework includes Data Structures and Algorithms, Object-Oriented Programming, Probability and Statistics, Linear Algebra, Computer Architecture, Digital Logic Design, Embedded Systems, and Microprocessors.</p>
-              <div className="cert-row">
-                {['OSHA 30', 'STEM Academy Success', 'Mechatronics Training Program', 'AWS Certified Developer'].map((cert) => (
-                  <span key={cert}>{cert}</span>
-                ))}
-              </div>
+          <section className="marquee-band" aria-hidden="true">
+            <div className="marquee-track">
+              <span>Edge AI · CUDA · Jetson · Benchmarks · Embedded · Mechatronics · Automation · </span>
+              <span>Edge AI · CUDA · Jetson · Benchmarks · Embedded · Mechatronics · Automation · </span>
             </div>
-          </div>
-        </Section>
+          </section>
 
-        <Section id="projects" title="Projects" kicker="04" note="Selected work with a bias toward systems that can be measured, debugged, or used by engineers.">
-          <div className="project-grid">
-            {projects.map((project, index) => (
-              <ProjectCard key={project.title} project={project} index={index} />
-            ))}
-          </div>
-        </Section>
+          <section className="section work" id="work">
+            <MotionDiv
+              className="section-head"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+            >
+              <p className="eyebrow">Selected work</p>
+              <h2>Projects built to be measured, debugged, and used.</h2>
+            </MotionDiv>
 
-        <Section id="skills" title="Skills" kicker="05" note="A compact stack view for recruiters and engineers scanning for fit.">
-          <div className="skills-layout">
-            <div className="skills-art">
-              <img src={heroArt} alt="" aria-hidden="true" />
-            </div>
-            <div className="skill-groups">
-              {skillGroups.map(([group, skills, icon]) => (
-                <div className="skill-group" key={group}>
-                  <h3>
-                    {createElement(icon, { size: 16 })}
-                    {group}
-                  </h3>
-                  <div className="tag-row">
-                    {skills.map((skill) => (
-                      <span key={skill}>{skill}</span>
-                    ))}
+            <div className="project-list">
+              {projects.map((project, index) => (
+                <MotionA
+                  className={`project-row accent-${project.accent}`}
+                  href={project.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  key={project.title}
+                  data-cursor="hover"
+                  data-cursor-label="View"
+                  onMouseEnter={() => setHoveredProject(project.title)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  onFocus={() => setHoveredProject(project.title)}
+                  onBlur={() => setHoveredProject(null)}
+                  initial={{ opacity: 0, y: 36 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ duration: 0.75, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <ProjectMedia project={project} active={hoveredProject === project.title} />
+                  <div className="project-content">
+                    <div className="project-meta">
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                      <span>{project.year}</span>
+                    </div>
+                    <div className="project-body">
+                      <div className="project-title-row">
+                        <h3>{project.title}</h3>
+                        <span className="project-role">{project.role}</span>
+                      </div>
+                      <p>{project.copy}</p>
+                      <ul className="tag-list">
+                        {project.tags.map((tag) => (
+                          <li key={tag}>{tag}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <span className="project-arrow" aria-hidden="true">↗</span>
                   </div>
-                </div>
+                </MotionA>
               ))}
             </div>
-          </div>
-        </Section>
+          </section>
 
-        <Section id="contact" title="Contact" kicker="06" note="The cleanest next step is a short note with the role, team, or project context.">
-          <div className="contact-card">
-            <div className="contact-heading">
-              <span>
-                <BadgeCheck size={17} />
-                Open to internships, research, and engineering projects
-              </span>
+          <section className="section experience" id="experience">
+            <MotionDiv
+              className="section-head"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+            >
+              <p className="eyebrow">Experience</p>
+              <h2>Where the work got real.</h2>
+            </MotionDiv>
+
+            <div className="experience-list">
+              {experiences.map((item, index) => {
+                const open = openExperience === index
+                return (
+                  <MotionArticle
+                    className={`experience-item${open ? ' open' : ''}`}
+                    key={item.company}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.65, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <button
+                      type="button"
+                      className="experience-summary"
+                      aria-expanded={open}
+                      data-cursor="hover"
+                      data-cursor-label={open ? 'Close' : 'Open'}
+                      onClick={() => setOpenExperience(open ? -1 : index)}
+                    >
+                      <div>
+                        <h3>{item.company}</h3>
+                        <p>{item.role}</p>
+                      </div>
+                      <div className="experience-aside">
+                        <span>{item.date}</span>
+                        <span className="chevron" aria-hidden="true" />
+                      </div>
+                    </button>
+                    <MotionDiv
+                      className="experience-panel"
+                      initial={false}
+                      animate={open ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <div className="experience-panel-inner">
+                        <p className="experience-place">{item.place}</p>
+                        <ul>
+                          {item.bullets.map((bullet) => (
+                            <li key={bullet}>{bullet}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </MotionDiv>
+                  </MotionArticle>
+                )
+              })}
             </div>
-            <p>
-              Based in California and connected to NJIT. Open to engineering, AI performance, embedded systems, and research opportunities.
-            </p>
-            <div className="contact-actions">
-              <a className="contact-button" href="mailto:brucemosetie@gmail.com">
-                <Mail size={17} />
-                brucemosetie@gmail.com
-              </a>
-              <a className="contact-button" href="tel:+19083481138">
-                <MapPin size={17} />
-                (908) 348-1138
-              </a>
-              <a className="contact-button" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer">
-                <Link size={17} />
-                github.com/BruceMoseti
-              </a>
-            </div>
-          </div>
-        </Section>
-      </main>
-    </div>
+          </section>
+
+          <section className="section about" id="about">
+            <MotionDiv
+              className="about-grid"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="about-photo">
+                <img src={portraitUrl} alt="Bruce Moseti" />
+              </div>
+              <div className="about-copy">
+                <p className="eyebrow">About</p>
+                <h2>Engineer enough to automate. Hardware enough to measure.</h2>
+                <p>
+                  I’m an Electrical Engineering student at New Jersey Institute of Technology (expected June 2028),
+                  currently a Performance Engineering Intern on NVIDIA Edge AI. My work sits between embedded platforms,
+                  GPU acceleration, and the tooling that makes performance visible.
+                </p>
+                <p>
+                  Dean’s List across Fall 2025, Spring 2025, and Spring 2026. Coursework spans algorithms, computer
+                  architecture, embedded systems, and microprocessors.
+                </p>
+                <div className="skill-bands">
+                  {skills.map((band) => (
+                    <div key={band.group}>
+                      <h3>{band.group}</h3>
+                      <p>{band.items.join(' · ')}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </MotionDiv>
+          </section>
+
+          <section className="section contact" id="contact">
+            <MotionDiv
+              className="contact-panel"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <p className="eyebrow">Contact</p>
+              <h2>Let’s build something measurable.</h2>
+              <p>
+                Open to engineering roles, research, and projects across Edge AI, embedded systems, and performance tooling.
+              </p>
+              <div className="contact-actions">
+                <Magnetic>
+                  <a className="btn primary" href="mailto:brucemosetie@gmail.com" data-cursor="hover" data-cursor-label="Email">
+                    brucemosetie@gmail.com
+                  </a>
+                </Magnetic>
+                <Magnetic>
+                  <a className="btn ghost" href="https://www.linkedin.com/in/brucemoseti" target="_blank" rel="noreferrer" data-cursor="hover">
+                    LinkedIn
+                  </a>
+                </Magnetic>
+                <Magnetic>
+                  <a className="btn ghost" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer" data-cursor="hover">
+                    GitHub
+                  </a>
+                </Magnetic>
+                <Magnetic>
+                  <a className="btn ghost" href={resumeUrl} target="_blank" rel="noreferrer" data-cursor="hover" data-cursor-label="Open">
+                    Resume
+                  </a>
+                </Magnetic>
+              </div>
+            </MotionDiv>
+          </section>
+        </main>
+
+        <footer className="footer">
+          <span>© {new Date().getFullYear()} Bruce Moseti</span>
+          <a
+            className="footer-live"
+            href="https://brucemoseti.github.io/brucemoseti-personal-website/"
+            data-cursor="hover"
+            data-cursor-label="Live"
+          >
+            Live site
+          </a>
+          <span>Crafted with motion, measured with care</span>
+        </footer>
+
+        <BruceLLM />
+      </div>
+    </SmoothScroll>
   )
 }
