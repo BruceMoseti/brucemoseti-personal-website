@@ -1,503 +1,338 @@
-import { createElement, useMemo, useState } from 'react'
-import {
-  Activity,
-  ArrowUpRight,
-  BadgeCheck,
-  BriefcaseBusiness,
-  ChevronRight,
-  Code2,
-  Contact,
-  Cpu,
-  Database,
-  Factory,
-  FileText,
-  Gauge,
-  GitBranch,
-  GraduationCap,
-  Link,
-  Mail,
-  MapPin,
-  Moon,
-  Sun,
-  Terminal,
-  Workflow,
-  Wrench,
-} from 'lucide-react'
-import avatarArt from './assets/mainm2.jpeg'
-import cardArt from './assets/card.png'
-import heroArt from './assets/hero.png'
+import { useEffect, useState } from 'react'
+import heroArt from './assets/mainm2.jpeg'
 import './App.css'
 
 const resumeUrl = `${import.meta.env.BASE_URL}Bruce_Moseti_Resume.pdf`
-
-const links = [
-  { label: 'Email', href: 'mailto:brucemosetie@gmail.com', icon: Mail },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/brucemoseti', icon: Contact },
-  { label: 'GitHub', href: 'https://github.com/BruceMoseti', icon: GitBranch },
-]
-
-const profileChips = ['NVIDIA Edge AI', 'NJIT EE', 'CUDA / TensorRT', 'Mechatronics']
-
-const profileStats = [
-  { value: '200K+', label: 'GPU workload runs analyzed' },
-  { value: '45%', label: 'workflow efficiency lift' },
-  { value: '40%', label: 'inference latency reduction' },
-  { value: '2028', label: 'B.S. Electrical Engineering' },
-]
+const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
 
 const navItems = [
-  ['About', '#about'],
-  ['Experience', '#experience'],
-  ['Projects', '#projects'],
-  ['Skills', '#skills'],
-  ['Contact', '#contact'],
+  { label: 'Work', href: '#work' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'About', href: '#about' },
+  { label: 'Contact', href: '#contact' },
 ]
 
-const aboutBullets = [
-  'Electrical Engineering student at New Jersey Institute of Technology, expected June 2028.',
-  'Performance Engineering Intern on NVIDIA Edge AI, focused on Jetson benchmarking, automation, and inference profiling.',
-  'Experience across GPU acceleration, embedded systems, optical manufacturing test automation, energy dashboards, and mechatronics training.',
-  'I care about engineering telemetry: making latency, throughput, memory, and hardware behavior visible enough to improve.',
+const projects = [
+  {
+    title: 'CueAI',
+    role: 'Physics-informed AI simulation',
+    year: '2026',
+    copy: 'A predictive billiards platform that combines numerical methods, Monte Carlo simulation, and reusable object-oriented software.',
+    tags: ['Python', 'C++', 'PyTorch', 'NumPy'],
+    href: 'https://github.com/BruceMoseti/cueai',
+    accent: 'cue',
+  },
+  {
+    title: 'Rootline',
+    role: 'Live incident intelligence',
+    year: '2026',
+    copy: 'Turns scattered operational signals into grounded context so engineers can move from noise to a usable incident picture faster.',
+    tags: ['Python', 'Systems', 'Evidence'],
+    href: 'https://github.com/BruceMoseti/rootline',
+    accent: 'root',
+  },
+  {
+    title: 'Energy Grid Dashboard',
+    role: 'Time-series analytics',
+    year: '2025',
+    copy: 'Visualizes grid performance, outage patterns, and usage anomalies with practical dashboard workflows for operators.',
+    tags: ['Python', 'Plotly Dash', 'Analytics'],
+    href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
+    accent: 'grid',
+  },
+  {
+    title: 'DeepSun',
+    role: 'GPU-accelerated edge inference',
+    year: '2025',
+    copy: 'Profiled and optimized CUDA / PyTorch / DeepStream pipelines, cutting real-time inference latency by about 40%.',
+    tags: ['CUDA', 'PyTorch', 'DeepStream'],
+    href: 'https://github.com/BruceMoseti',
+    accent: 'sun',
+  },
 ]
 
 const experiences = [
   {
     company: 'NVIDIA',
     role: 'Performance Engineering Intern, Edge AI',
-    location: 'Santa Clara, CA',
-    date: 'May 2026 - Present',
-    icon: Cpu,
-    summary: 'Benchmarking and profiling embedded AI workloads on Jetson platforms.',
-    stack: ['Python', 'CUDA', 'cuDNN', 'TensorRT', 'Jetson'],
+    place: 'Santa Clara, CA',
+    date: 'May 2026 — Present',
     bullets: [
-      'Developed Python benchmarking and automation tools for NVIDIA Jetson embedded AI platforms across 200,000+ GPU workload runs.',
-      'Automated latency, throughput, memory, and GPU utilization analysis to accelerate performance regression detection.',
-      'Profiled CUDA, cuDNN, and TensorRT inference pipelines to identify bottlenecks in real-time AI workloads.',
+      'Built Python benchmarking and automation for Jetson platforms across 200,000+ GPU workload runs.',
+      'Automated latency, throughput, memory, and GPU utilization analysis to catch regressions faster.',
+      'Profiled CUDA, cuDNN, and TensorRT inference pipelines to find bottlenecks in real-time AI workloads.',
     ],
   },
   {
     company: 'NOKIA',
     role: 'Software Engineering: Test Development Co-op',
-    location: 'Allentown, PA',
-    date: 'Jun 2021 - Aug 2021',
-    icon: Wrench,
-    summary: 'Built automation and validation workflows for optical networking manufacturing tests.',
-    stack: ['Python', 'C#', 'PowerShell', 'GitLab CI/CD', 'TROSA'],
+    place: 'Allentown, PA',
+    date: 'Jun 2021 — Aug 2021',
     bullets: [
       'Improved engineering workflow efficiency by 45% with Python, C#, and PowerShell automation for TROSA validation.',
       'Designed reusable testing frameworks and GitLab CI/CD pipelines for optical networking system validation.',
-      'Analyzed manufacturing and test datasets to support root-cause analysis across hardware-software issues.',
+      'Analyzed manufacturing and test datasets to support hardware-software root-cause analysis.',
     ],
   },
   {
     company: 'NJIT Space Weather Research',
     role: 'AI Research Intern',
-    location: 'Newark, NJ',
-    date: 'May 2020 - Aug 2020',
-    icon: Code2,
-    summary: 'Applied GPU acceleration to computer vision and space-weather research workloads.',
-    stack: ['Python', 'CUDA', 'PyTorch', 'DeepStream', 'Computer Vision'],
+    place: 'Newark, NJ',
+    date: 'May 2020 — Aug 2020',
     bullets: [
       'Engineered GPU-accelerated computer vision pipelines with Python, CUDA, PyTorch, and NVIDIA DeepStream.',
       'Reduced real-time inference latency by approximately 40% through benchmarking and deployment optimization.',
-      'Used research literature, LLMs, and experimental benchmarking to compare deep learning approaches.',
+      'Compared deep learning approaches using research literature, LLMs, and experimental measurement.',
     ],
   },
   {
     company: 'CIBM3 Lab',
     role: 'Research Software Engineer Intern',
-    location: 'Newark, NJ',
-    date: 'May 2020 - Aug 2020',
-    icon: BriefcaseBusiness,
-    summary: 'Developed data and embedded-firmware tooling for research instrumentation.',
-    stack: ['Python', 'SQL', 'Dashboards', 'Firmware', 'HIL Testing'],
+    place: 'Newark, NJ',
+    date: 'May 2020 — Aug 2020',
     bullets: [
       'Built Python and SQL pipelines that automated infrastructure reporting and dashboard updates.',
-      'Ran hardware-in-the-loop tests to reproduce power disturbances and measure system response under fault conditions.',
-      'Implemented ADC moving-average filtering and debounce logic to reduce false embedded-system triggers.',
+      'Ran hardware-in-the-loop tests to reproduce power disturbances and measure system response.',
+      'Implemented ADC moving-average filtering and debounce logic to reduce false embedded triggers.',
     ],
   },
 ]
 
-const projects = [
-  {
-    title: 'CueAI',
-    meta: 'Physics-informed AI billiards simulation',
-    date: '2026',
-    type: 'AI simulation',
-    href: 'https://github.com/BruceMoseti/cueai',
-    tags: ['Python', 'C++', 'PyTorch', 'NumPy'],
-    copy: 'Built a predictive simulation platform using numerical methods, statistical analysis, and reusable object-oriented software.',
-  },
-  {
-    title: 'Rootline',
-    meta: 'Live incident intelligence',
-    date: '2026',
-    type: 'Systems tool',
-    href: 'https://github.com/BruceMoseti/rootline',
-    tags: ['Python', 'Evidence', 'Systems'],
-    copy: 'A grounded incident-intelligence project focused on turning scattered signals into usable operational context.',
-  },
-  {
-    title: 'Energy Grid Performance Dashboard',
-    meta: 'Time-series analytics dashboard',
-    date: '2025',
-    type: 'Data product',
-    href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
-    tags: ['Python', 'Plotly Dash', 'Analytics'],
-    copy: 'Visualizes grid performance, outage patterns, and usage anomalies with practical dashboard workflows.',
-  },
-  {
-    title: 'Advanced Manufacturing and Mechatronics',
-    meta: 'NJIT Makerspace training program',
-    date: '2025',
-    type: 'Training archive',
-    href: 'https://github.com/BruceMoseti/NJIT-Makerspace-Advanced-Manufacturing-and-Mechatronics-Training-Program',
-    tags: ['Mechatronics', 'Manufacturing', 'Documentation'],
-    copy: 'Documents manufacturing and mechatronics training work across shop, automation, and engineering fundamentals.',
-  },
-  {
-    title: 'DeepSun',
-    meta: 'GPU-accelerated edge AI inference',
-    date: '2025',
-    type: 'Research system',
-    href: 'https://github.com/BruceMoseti',
-    tags: ['CUDA', 'PyTorch', 'DeepStream'],
-    copy: 'Optimized GPU-accelerated inference and reduced real-time latency by approximately 40% through profiling.',
-  },
-  {
-    title: 'AI Imaging Analysis',
-    meta: 'Biomedical machine learning tools',
-    date: '2025',
-    type: 'Research tooling',
-    href: 'https://github.com/BruceMoseti',
-    tags: ['OpenCV', 'ML', 'Python'],
-    copy: 'Processed traumatic brain injury imaging datasets and evaluated predictive model performance.',
-  },
+const skills = [
+  { group: 'Languages', items: ['C++', 'Python', 'Java', 'TypeScript', 'SQL'] },
+  { group: 'AI & Systems', items: ['CUDA', 'TensorRT', 'PyTorch', 'DeepStream', 'Embedded'] },
+  { group: 'Web & Tools', items: ['React', 'Node.js', 'Git', 'Docker', 'AWS'] },
 ]
 
-const skillGroups = [
-  ['Languages', ['C++', 'Java', 'Python', 'R', 'HTML5', 'CSS3', 'JavaScript', 'TypeScript', 'SQL', 'Erlang'], Terminal],
-  ['AI and Systems', ['CUDA', 'cuDNN', 'PyTorch', 'TensorFlow', 'NVIDIA DeepStream', 'Embedded Systems'], Gauge],
-  ['Web and Backend', ['React.js', 'Node.js', 'Next.js', 'Express.js', 'Django', 'Flask', 'GraphQL', 'REST APIs'], Workflow],
-  ['Tools and Data', ['Git', 'Docker', 'Jenkins', 'MongoDB', 'MySQL', 'Tableau', 'Power BI', 'AWS'], Database],
-]
+function useReveal() {
+  useEffect(() => {
+    const nodes = document.querySelectorAll('[data-reveal]')
+    if (!nodes.length || !('IntersectionObserver' in window)) {
+      nodes.forEach((node) => node.classList.add('is-visible'))
+      return undefined
+    }
 
-function NameMark() {
-  return (
-    <svg className="name-mark" viewBox="0 0 330 158" role="img" aria-label="Bruce Moseti">
-      <defs>
-        <pattern id="dot-grid" patternUnits="userSpaceOnUse" width="18" height="18">
-          <circle cx="9" cy="9" r="1.2" />
-        </pattern>
-      </defs>
-      <ellipse className="name-dots" cx="166" cy="78" rx="158" ry="62" transform="rotate(7 166 78)" />
-      <ellipse className="name-ring" cx="166" cy="78" rx="142" ry="42" transform="rotate(-10 166 78)" />
-      <path className="sparkle sparkle-one" d="M275 28l5 14 14 5-14 5-5 14-5-14-14-5 14-5z" />
-      <path className="sparkle sparkle-two" d="M64 116l4 12 12 4-12 4-4 12-4-12-12-4 12-4z" />
-      <g transform="rotate(-4 165 82)">
-        <text x="50%" y="54%" textAnchor="middle" dominantBaseline="middle" className="name-shadow">
-          Bruce
-        </text>
-        <text x="50%" y="54%" textAnchor="middle" dominantBaseline="middle" className="name-stroke">
-          Bruce
-        </text>
-        <text x="50%" y="54%" textAnchor="middle" dominantBaseline="middle" className="name-fill">
-          Bruce
-        </text>
-        <text x="50%" y="81%" textAnchor="middle" dominantBaseline="middle" className="name-small">
-          Moseti
-        </text>
-      </g>
-    </svg>
-  )
-}
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.16, rootMargin: '0px 0px -8% 0px' },
+    )
 
-function IconLink({ href, label, icon }) {
-  return (
-    <a className="icon-link" href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel="noreferrer" aria-label={label}>
-      {createElement(icon, { size: 20, strokeWidth: 1.9 })}
-      <span>{label}</span>
-    </a>
-  )
-}
-
-function Section({ id, title, kicker, note, children }) {
-  return (
-    <section id={id} className="section-block">
-      <div className="section-heading">
-        <span>{kicker}</span>
-        <h2>{title}</h2>
-      </div>
-      {note ? <p className="section-note">{note}</p> : null}
-      <div className="rule" />
-      {children}
-    </section>
-  )
-}
-
-function ExperienceItem({ item, open }) {
-  return (
-    <details className="experience-item" defaultOpen={open}>
-      <summary>
-        <span className="experience-icon">
-          {createElement(item.icon, { size: 20 })}
-        </span>
-        <span className="experience-copy">
-          <span className="experience-title">
-            <strong>{item.company}</strong>
-            <ChevronRight size={16} />
-          </span>
-          <span>{item.role}</span>
-          <span className="experience-summary">{item.summary}</span>
-          <span className="experience-place">
-            <MapPin size={13} />
-            {item.location}
-          </span>
-        </span>
-        <time>{item.date}</time>
-      </summary>
-      <ul>
-        {item.bullets.map((bullet) => (
-          <li key={bullet}>{bullet}</li>
-        ))}
-      </ul>
-      <div className="experience-stack">
-        {item.stack.map((tool) => (
-          <span key={tool}>{tool}</span>
-        ))}
-      </div>
-    </details>
-  )
-}
-
-function ProjectCard({ project, index }) {
-  return (
-    <a className={`project-card${index < 2 ? ' featured' : ''}`} href={project.href} target="_blank" rel="noreferrer">
-      <span className="project-topline">
-        <span className="project-number">{String(index + 1).padStart(2, '0')}</span>
-        <span>{project.date}</span>
-      </span>
-      <span className="project-meta">{project.type}</span>
-      <h3>{project.title}</h3>
-      <span className="project-subtitle">{project.meta}</span>
-      <p>{project.copy}</p>
-      <span className="tag-row">
-        {project.tags.map((tag) => (
-          <span key={tag}>{tag}</span>
-        ))}
-      </span>
-      <span className="project-action">
-        View project
-        <ArrowUpRight size={14} />
-      </span>
-    </a>
-  )
+    nodes.forEach((node) => observer.observe(node))
+    return () => observer.disconnect()
+  }, [])
 }
 
 export default function App() {
-  const [isDark, setIsDark] = useState(true)
-  const themeLabel = isDark ? 'light' : 'dark'
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [openExperience, setOpenExperience] = useState(0)
 
-  const themeClass = useMemo(() => (isDark ? 'theme-dark' : 'theme-light'), [isDark])
+  useReveal()
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
 
   return (
-    <div className={`portfolio ${themeClass}`}>
+    <div className="site">
+      <div className="atmosphere" aria-hidden="true" />
       <a className="skip-link" href="#content">Skip to content</a>
-      <aside className="intro-panel">
-        <button className="theme-toggle" type="button" onClick={() => setIsDark((value) => !value)} aria-label={`Switch to ${themeLabel} mode`}>
-          {isDark ? <Sun size={18} /> : <Moon size={18} />}
+
+      <header className="topbar">
+        <a className="brand" href="#top" aria-label="Bruce Moseti home">
+          <span className="brand-mark">B</span>
+          <span className="brand-name">Bruce Moseti</span>
+        </a>
+
+        <nav className="desktop-nav" aria-label="Primary">
+          {navItems.map((item) => (
+            <a key={item.href} href={item.href}>{item.label}</a>
+          ))}
+          <a className="nav-cta" href={resumeUrl} target="_blank" rel="noreferrer">Resume</a>
+        </nav>
+
+        <button
+          className={`menu-toggle${menuOpen ? ' open' : ''}`}
+          type="button"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          onClick={() => setMenuOpen((value) => !value)}
+        >
+          <span />
+          <span />
         </button>
+      </header>
 
-        <div className="intro-top">
-          <NameMark />
-          <p className="intro-kicker">Electrical Engineering @ NJIT</p>
-          <div className="profile-chip-row" aria-label="Portfolio focus areas">
-            {profileChips.map((chip) => (
-              <span key={chip}>{chip}</span>
-            ))}
-          </div>
-          <p className="intro-copy">
-            Performance engineering, embedded AI, and automation work for teams that need cleaner measurements and faster iteration.
-          </p>
+      <div id="mobile-nav" className={`mobile-nav${menuOpen ? ' open' : ''}`}>
+        {navItems.map((item) => (
+          <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>
+        ))}
+        <a href={resumeUrl} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Resume</a>
+      </div>
 
-          <div className="link-row">
-            {links.map((link) => (
-              <IconLink key={link.label} {...link} />
-            ))}
-          </div>
-
-          <nav className="nav-list" aria-label="Main sections">
-            {navItems.map(([label, href]) => (
-              <a key={label} href={href}>{label}</a>
-            ))}
-          </nav>
-        </div>
-
-        <div className="avatar-stage">
-          <div className="speech-bubble">Edge AI, mechatronics, automation, and systems work.</div>
-          <div className="avatar-frame">
-            <img src={avatarArt} alt="Stylized avatar artwork" />
-          </div>
-          <img className="floating-card" src={cardArt} alt="" aria-hidden="true" />
-        </div>
-
-        <p className="built-note">
-          Built by <strong>Bruce Moseti</strong>
-        </p>
-      </aside>
-
-      <main className="content-panel" id="content">
-        <section className="hero-section" id="home">
-          <div className="hero-photo">
-            <img src={avatarArt} alt="Stylized avatar artwork" />
-          </div>
-          <div>
-            <div className="status-row">
-              <span>
-                <Activity size={14} />
-                Available for engineering roles
-              </span>
-              <span>
-                <Factory size={14} />
-                Mechatronics + manufacturing
-              </span>
-            </div>
-            <p className="eyebrow">Portfolio / Edge AI / Embedded systems</p>
-            <h1>Hi, I&apos;m Bruce.</h1>
-            <p className="lead">
-              I turn hardware and AI performance problems into measurable systems: benchmarks, dashboards, test automation, and
-              pipelines that make engineering decisions clearer.
+      <main id="content">
+        <section className="hero" id="top">
+          <div className="hero-copy" data-reveal>
+            <p className="hero-kicker">Electrical Engineering · NJIT · Edge AI</p>
+            <h1>Bruce Moseti</h1>
+            <p className="hero-lead">
+              I turn hardware and AI performance problems into systems you can measure—
+              benchmarks, profiling, automation, and cleaner engineering decisions.
             </p>
-            <div className="metric-grid" aria-label="Selected outcomes">
-              {profileStats.map((stat) => (
-                <div className="metric-card" key={stat.label}>
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </div>
-              ))}
-            </div>
             <div className="hero-actions">
-              <a className="button-link" href={resumeUrl} target="_blank" rel="noreferrer">
-                <FileText size={17} />
-                Resume
-              </a>
-              <a className="button-link" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer">
-                <GitBranch size={17} />
-                GitHub
-              </a>
-              <a className="button-link primary" href="mailto:brucemosetie@gmail.com">
-                <Mail size={17} />
-                Contact
-              </a>
+              <a className="btn primary" href="#work">View work</a>
+              <a className="btn ghost" href="mailto:brucemosetie@gmail.com">Get in touch</a>
             </div>
+          </div>
+
+          <div className="hero-visual" data-reveal>
+            <div className="hero-frame">
+              <img src={heroArt} alt="Stylized portrait of Bruce Moseti" />
+            </div>
+            <div className="hero-orbit" aria-hidden="true" />
           </div>
         </section>
 
-        <Section
-          id="about"
-          title="About Me"
-          kicker="01"
-          note="A practical engineering profile: software enough to automate, hardware enough to measure, and research enough to test assumptions."
-        >
-          <ul className="about-list">
-            {aboutBullets.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </Section>
+        <section className="section work" id="work">
+          <div className="section-head" data-reveal>
+            <p className="eyebrow">Selected work</p>
+            <h2>Projects built to be measured, debugged, and used.</h2>
+          </div>
 
-        <Section
-          id="experience"
-          title="Experience"
-          kicker="02"
-          note="Concise resume-style entries with expandable details so the page stays scannable."
-        >
-          <div className="experience-list">
-            {experiences.map((item, index) => (
-              <ExperienceItem key={item.company} item={item} open={index < 2} />
+          <div className="project-list">
+            {projects.map((project, index) => (
+              <a
+                className={`project-row accent-${project.accent}`}
+                href={project.href}
+                target="_blank"
+                rel="noreferrer"
+                key={project.title}
+                data-reveal
+                style={{ '--delay': `${index * 60}ms` }}
+              >
+                <div className="project-meta">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <span>{project.year}</span>
+                </div>
+                <div className="project-body">
+                  <div className="project-title-row">
+                    <h3>{project.title}</h3>
+                    <span className="project-role">{project.role}</span>
+                  </div>
+                  <p>{project.copy}</p>
+                  <ul className="tag-list">
+                    {project.tags.map((tag) => (
+                      <li key={tag}>{tag}</li>
+                    ))}
+                  </ul>
+                </div>
+                <span className="project-arrow" aria-hidden="true">↗</span>
+                <div className="project-wash" aria-hidden="true" />
+              </a>
             ))}
           </div>
-        </Section>
+        </section>
 
-        <Section id="education" title="Education" kicker="03" note="Academic foundation in electrical engineering, embedded systems, software, and applied math.">
-          <div className="education-card">
-            <span className="education-icon">
-              <GraduationCap size={22} />
-            </span>
-            <div>
-              <h3>New Jersey Institute of Technology</h3>
-              <p>Bachelor of Science in Electrical Engineering, expected June 2028.</p>
-              <p>Dean&apos;s List: Fall 2025, Spring 2025, Spring 2026.</p>
-              <p>Coursework includes Data Structures and Algorithms, Object-Oriented Programming, Probability and Statistics, Linear Algebra, Computer Architecture, Digital Logic Design, Embedded Systems, and Microprocessors.</p>
-              <div className="cert-row">
-                {['OSHA 30', 'STEM Academy Success', 'Mechatronics Training Program', 'AWS Certified Developer'].map((cert) => (
-                  <span key={cert}>{cert}</span>
+        <section className="section experience" id="experience">
+          <div className="section-head" data-reveal>
+            <p className="eyebrow">Experience</p>
+            <h2>Where the work got real.</h2>
+          </div>
+
+          <div className="experience-list" data-reveal>
+            {experiences.map((item, index) => {
+              const open = openExperience === index
+              return (
+                <article className={`experience-item${open ? ' open' : ''}`} key={item.company}>
+                  <button
+                    type="button"
+                    className="experience-summary"
+                    aria-expanded={open}
+                    onClick={() => setOpenExperience(open ? -1 : index)}
+                  >
+                    <div>
+                      <h3>{item.company}</h3>
+                      <p>{item.role}</p>
+                    </div>
+                    <div className="experience-aside">
+                      <span>{item.date}</span>
+                      <span className="chevron" aria-hidden="true" />
+                    </div>
+                  </button>
+                  <div className="experience-panel" hidden={!open}>
+                    <p className="experience-place">{item.place}</p>
+                    <ul>
+                      {item.bullets.map((bullet) => (
+                        <li key={bullet}>{bullet}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </section>
+
+        <section className="section about" id="about">
+          <div className="about-grid" data-reveal>
+            <div className="about-photo">
+              <img src={portraitUrl} alt="Bruce Moseti" />
+            </div>
+            <div className="about-copy">
+              <p className="eyebrow">About</p>
+              <h2>Engineer enough to automate. Hardware enough to measure.</h2>
+              <p>
+                I’m an Electrical Engineering student at New Jersey Institute of Technology (expected June 2028),
+                currently a Performance Engineering Intern on NVIDIA Edge AI. My work sits between embedded platforms,
+                GPU acceleration, and the tooling that makes performance visible.
+              </p>
+              <p>
+                Dean’s List across Fall 2025, Spring 2025, and Spring 2026. Coursework spans algorithms, computer
+                architecture, embedded systems, and microprocessors.
+              </p>
+              <div className="skill-bands">
+                {skills.map((band) => (
+                  <div key={band.group}>
+                    <h3>{band.group}</h3>
+                    <p>{band.items.join(' · ')}</p>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
-        </Section>
+        </section>
 
-        <Section id="projects" title="Projects" kicker="04" note="Selected work with a bias toward systems that can be measured, debugged, or used by engineers.">
-          <div className="project-grid">
-            {projects.map((project, index) => (
-              <ProjectCard key={project.title} project={project} index={index} />
-            ))}
-          </div>
-        </Section>
-
-        <Section id="skills" title="Skills" kicker="05" note="A compact stack view for recruiters and engineers scanning for fit.">
-          <div className="skills-layout">
-            <div className="skills-art">
-              <img src={heroArt} alt="" aria-hidden="true" />
-            </div>
-            <div className="skill-groups">
-              {skillGroups.map(([group, skills, icon]) => (
-                <div className="skill-group" key={group}>
-                  <h3>
-                    {createElement(icon, { size: 16 })}
-                    {group}
-                  </h3>
-                  <div className="tag-row">
-                    {skills.map((skill) => (
-                      <span key={skill}>{skill}</span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Section>
-
-        <Section id="contact" title="Contact" kicker="06" note="The cleanest next step is a short note with the role, team, or project context.">
-          <div className="contact-card">
-            <div className="contact-heading">
-              <span>
-                <BadgeCheck size={17} />
-                Open to internships, research, and engineering projects
-              </span>
-            </div>
+        <section className="section contact" id="contact">
+          <div className="contact-panel" data-reveal>
+            <p className="eyebrow">Contact</p>
+            <h2>Let’s build something measurable.</h2>
             <p>
-              Based in California and connected to NJIT. Open to engineering, AI performance, embedded systems, and research opportunities.
+              Open to engineering roles, research, and projects across Edge AI, embedded systems, and performance tooling.
             </p>
             <div className="contact-actions">
-              <a className="contact-button" href="mailto:brucemosetie@gmail.com">
-                <Mail size={17} />
-                brucemosetie@gmail.com
-              </a>
-              <a className="contact-button" href="tel:+19083481138">
-                <MapPin size={17} />
-                (908) 348-1138
-              </a>
-              <a className="contact-button" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer">
-                <Link size={17} />
-                github.com/BruceMoseti
-              </a>
+              <a className="btn primary" href="mailto:brucemosetie@gmail.com">brucemosetie@gmail.com</a>
+              <a className="btn ghost" href="https://www.linkedin.com/in/brucemoseti" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a className="btn ghost" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer">GitHub</a>
+              <a className="btn ghost" href={resumeUrl} target="_blank" rel="noreferrer">Resume</a>
             </div>
           </div>
-        </Section>
+        </section>
       </main>
+
+      <footer className="footer">
+        <span>© {new Date().getFullYear()} Bruce Moseti</span>
+        <span>Built with care in React</span>
+      </footer>
     </div>
   )
 }
