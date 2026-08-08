@@ -15,6 +15,9 @@ const MotionH1 = motion.h1
 const MotionArticle = motion.article
 
 const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
+const linkedInUrl = 'https://www.linkedin.com/in/brucemoseti/'
+const githubUrl = 'https://github.com/BruceMoseti'
+const emailUrl = 'mailto:brucemosetie@gmail.com'
 
 const navItems = [
   { label: 'Work', href: '#work' },
@@ -26,40 +29,40 @@ const navItems = [
 const projects = [
   {
     title: 'CueAI',
-    role: 'Physics-informed AI simulation',
+    role: 'AI simulation',
     year: '2026',
-    copy: 'Predictive billiards simulation combining numerical methods, Monte Carlo sampling, and reusable object-oriented software.',
-    tags: ['Python', 'C++', 'PyTorch', 'NumPy'],
+    copy: 'A simulation project exploring physics-informed models and numerical methods.',
+    tags: ['Python', 'C++', 'PyTorch'],
     href: 'https://github.com/BruceMoseti/cueai',
     accent: 'cue',
     media: 'video',
   },
   {
     title: 'Rootline',
-    role: 'Live incident intelligence',
+    role: 'Systems tooling',
     year: '2026',
-    copy: 'Turns scattered operational signals into grounded context so engineers can move from noise to a usable incident picture.',
-    tags: ['Python', 'Systems', 'Evidence'],
+    copy: 'A project focused on turning scattered signals into clearer operational context.',
+    tags: ['Python', 'Systems'],
     href: 'https://github.com/BruceMoseti/rootline',
     accent: 'root',
     media: 'grid',
   },
   {
     title: 'Energy Grid Dashboard',
-    role: 'Time-series analytics',
+    role: 'Data visualization',
     year: '2025',
-    copy: 'Visualizes grid performance, outage patterns, and usage anomalies with practical operator workflows.',
-    tags: ['Python', 'Plotly Dash', 'Analytics'],
+    copy: 'A dashboard for exploring performance trends and usage patterns over time.',
+    tags: ['Python', 'Dash'],
     href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
     accent: 'grid',
     media: 'bars',
   },
   {
     title: 'DeepSun',
-    role: 'GPU-accelerated edge inference',
+    role: 'Edge inference',
     year: '2025',
-    copy: 'Profiled and optimized CUDA / PyTorch / DeepStream pipelines, cutting real-time inference latency by about 40%.',
-    tags: ['CUDA', 'PyTorch', 'DeepStream'],
+    copy: 'Work on accelerating and profiling GPU inference pipelines for edge systems.',
+    tags: ['CUDA', 'PyTorch'],
     href: 'https://github.com/BruceMoseti',
     accent: 'sun',
     media: 'orbit',
@@ -73,20 +76,20 @@ const experiences = [
     place: 'Santa Clara, CA',
     date: 'May 2026 — Present',
     bullets: [
-      'Built Python benchmarking and automation for Jetson platforms across 200,000+ GPU workload runs.',
-      'Automated latency, throughput, memory, and GPU utilization analysis to catch regressions faster.',
-      'Profiled CUDA, cuDNN, and TensorRT inference pipelines to find bottlenecks in real-time AI workloads.',
+      'Build tooling for benchmarking and analyzing embedded AI workloads.',
+      'Help teams understand latency, throughput, and utilization trends.',
+      'Work with engineers to improve real-time inference pipelines.',
     ],
   },
   {
     company: 'NOKIA',
-    role: 'Software Engineering: Test Development Co-op',
+    role: 'Software Engineering Co-op',
     place: 'Allentown, PA',
     date: 'Jun 2021 — Aug 2021',
     bullets: [
-      'Improved engineering workflow efficiency by 45% with Python, C#, and PowerShell automation for TROSA validation.',
-      'Designed reusable testing frameworks and GitLab CI/CD pipelines for optical networking system validation.',
-      'Analyzed manufacturing and test datasets to support hardware-software root-cause analysis.',
+      'Automated testing and validation workflows for networking hardware.',
+      'Helped improve release validation with reusable frameworks and CI.',
+      'Supported root-cause analysis across software and hardware issues.',
     ],
   },
   {
@@ -95,9 +98,9 @@ const experiences = [
     place: 'Newark, NJ',
     date: 'May 2020 — Aug 2020',
     bullets: [
-      'Engineered GPU-accelerated computer vision pipelines with Python, CUDA, PyTorch, and NVIDIA DeepStream.',
-      'Reduced real-time inference latency by approximately 40% through benchmarking and deployment optimization.',
-      'Compared deep learning approaches using research literature, LLMs, and experimental measurement.',
+      'Worked on GPU-accelerated computer vision pipelines.',
+      'Benchmarked models and measured end-to-end performance.',
+      'Compared approaches through experiments and literature.',
     ],
   },
   {
@@ -106,9 +109,9 @@ const experiences = [
     place: 'Newark, NJ',
     date: 'May 2020 — Aug 2020',
     bullets: [
-      'Built Python and SQL pipelines that automated infrastructure reporting and dashboard updates.',
-      'Ran hardware-in-the-loop tests to reproduce power disturbances and measure system response.',
-      'Implemented ADC moving-average filtering and debounce logic to reduce false embedded triggers.',
+      'Built data pipelines and reporting tools for lab systems.',
+      'Supported hardware-in-the-loop testing and measurement.',
+      'Helped improve embedded firmware reliability.',
     ],
   },
 ]
@@ -232,7 +235,7 @@ export default function App() {
               </Magnetic>
             ))}
             <Magnetic>
-              <a className="nav-cta" href="mailto:brucemosetie@gmail.com" data-cursor="hover" data-cursor-label="Email">
+              <a className="nav-cta" href={emailUrl} data-cursor="hover" data-cursor-label="Email">
                 Contact
               </a>
             </Magnetic>
@@ -263,7 +266,8 @@ export default function App() {
               {item.label}
             </a>
           ))}
-          <a href="mailto:brucemosetie@gmail.com" onClick={() => setMenuOpen(false)}>Contact</a>
+          <a href={emailUrl} onClick={() => setMenuOpen(false)}>Contact</a>
+          <a href={linkedInUrl} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)}>LinkedIn</a>
         </div>
 
         <main id="content">
@@ -271,15 +275,15 @@ export default function App() {
             <MotionDiv className="hero-copy" style={{ y: heroY, opacity: heroOpacity }}>
               <MotionDiv variants={stagger} initial="hidden" animate={ready ? 'show' : 'hidden'}>
                 <MotionP className="hero-kicker" variants={fadeUp}>
-                  Electrical Engineering · NJIT · Edge AI
+                  Electrical Engineering · NJIT
                 </MotionP>
                 <MotionH1 variants={fadeUp} className="hero-title">
                   <span>Bruce</span>
                   <span>Moseti</span>
                 </MotionH1>
                 <MotionP className="hero-lead" variants={fadeUp}>
-                  I design measurement into machines — benchmarking, profiling, and automation that make
-                  Edge AI systems clearer, faster, and easier to trust.
+                  Electrical engineering student building software for systems that need to be measured,
+                  understood, and improved.
                 </MotionP>
                 <MotionDiv className="hero-actions" variants={fadeUp}>
                   <Magnetic>
@@ -288,7 +292,7 @@ export default function App() {
                     </a>
                   </Magnetic>
                   <Magnetic>
-                    <a className="btn ghost" href="mailto:brucemosetie@gmail.com" data-cursor="hover" data-cursor-label="Email">
+                    <a className="btn ghost" href={emailUrl} data-cursor="hover" data-cursor-label="Email">
                       Get in touch
                     </a>
                   </Magnetic>
@@ -304,8 +308,8 @@ export default function App() {
 
           <section className="marquee-band" aria-hidden="true">
             <div className="marquee-track">
-              <span>Edge AI · CUDA · Jetson · Benchmarks · Embedded · Mechatronics · Automation · </span>
-              <span>Edge AI · CUDA · Jetson · Benchmarks · Embedded · Mechatronics · Automation · </span>
+              <span>Edge AI · Embedded · Software · Research · Automation · Systems · </span>
+              <span>Edge AI · Embedded · Software · Research · Automation · Systems · </span>
             </div>
           </section>
 
@@ -318,7 +322,7 @@ export default function App() {
               viewport={{ once: true, amount: 0.4 }}
             >
               <p className="eyebrow">Selected work</p>
-              <h2>Projects built to be measured, debugged, and used.</h2>
+              <h2>A few things I’ve built and explored.</h2>
             </MotionDiv>
 
             <div className="project-list">
@@ -374,7 +378,7 @@ export default function App() {
               viewport={{ once: true, amount: 0.4 }}
             >
               <p className="eyebrow">Experience</p>
-              <h2>Where the work got real.</h2>
+              <h2>Places I’ve learned by building.</h2>
             </MotionDiv>
 
             <div className="experience-list">
@@ -440,15 +444,13 @@ export default function App() {
               </div>
               <div className="about-copy">
                 <p className="eyebrow">About</p>
-                <h2>Engineer enough to automate. Hardware enough to measure.</h2>
+                <h2>Curious about systems — software, hardware, and how they meet.</h2>
                 <p>
-                  I’m an Electrical Engineering student at New Jersey Institute of Technology (expected June 2028),
-                  currently a Performance Engineering Intern on NVIDIA Edge AI. My work sits between embedded platforms,
-                  GPU acceleration, and the tooling that makes performance visible.
+                  I’m an Electrical Engineering student at NJIT. I like building tools and experiments that make
+                  complex systems easier to understand.
                 </p>
                 <p>
-                  Dean’s List across Fall 2025, Spring 2025, and Spring 2026. Coursework spans algorithms, computer
-                  architecture, embedded systems, and microprocessors.
+                  Outside class, I’ve worked across internships in performance engineering, test automation, and research.
                 </p>
                 <div className="skill-bands">
                   {skills.map((band) => (
@@ -471,26 +473,32 @@ export default function App() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             >
               <p className="eyebrow">Contact</p>
-              <h2>Let’s build something measurable.</h2>
-              <p>
-                Open to engineering roles, research, and projects across Edge AI, embedded systems, and performance tooling.
-              </p>
+              <h2>Let’s talk.</h2>
+              <p>Open to roles, research, and interesting projects.</p>
               <div className="contact-actions">
-                <Magnetic>
-                  <a className="btn primary" href="mailto:brucemosetie@gmail.com" data-cursor="hover" data-cursor-label="Email">
-                    brucemosetie@gmail.com
-                  </a>
-                </Magnetic>
-                <Magnetic>
-                  <a className="btn ghost" href="https://www.linkedin.com/in/brucemoseti" target="_blank" rel="noreferrer" data-cursor="hover">
-                    LinkedIn
-                  </a>
-                </Magnetic>
-                <Magnetic>
-                  <a className="btn ghost" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer" data-cursor="hover">
-                    GitHub
-                  </a>
-                </Magnetic>
+                <a className="btn primary" href={emailUrl} data-cursor="hover" data-cursor-label="Email">
+                  brucemosetie@gmail.com
+                </a>
+                <a
+                  className="btn ghost"
+                  href={linkedInUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-cursor="hover"
+                  data-cursor-label="Open"
+                >
+                  LinkedIn
+                </a>
+                <a
+                  className="btn ghost"
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-cursor="hover"
+                  data-cursor-label="Open"
+                >
+                  GitHub
+                </a>
               </div>
             </MotionDiv>
           </section>
