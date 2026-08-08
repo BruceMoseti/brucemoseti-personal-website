@@ -72,9 +72,9 @@ const projects = [
 const experiences = [
   {
     company: 'NVIDIA',
-    role: 'Incoming Performance Engineering Intern, Edge AI',
+    role: 'Performance Engineering Intern, Edge AI',
     place: 'Internship',
-    date: 'Jan 2026 — Present',
+    date: 'May 2026 — Present',
     bullets: [],
   },
   {
