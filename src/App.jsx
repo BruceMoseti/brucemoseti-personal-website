@@ -15,7 +15,7 @@ const MotionH1 = motion.h1
 const MotionArticle = motion.article
 
 const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
-const linkedInUrl = 'https://www.linkedin.com/in/brucemoseti/'
+const linkedInUrl = 'https://www.linkedin.com/in/bruce-moseti-9553172a9/'
 const githubUrl = 'https://github.com/BruceMoseti'
 const emailUrl = 'mailto:brucemosetie@gmail.com'
 
