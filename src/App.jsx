@@ -1,6 +1,18 @@
-import { useEffect, useState } from 'react'
-import heroArt from './assets/mainm2.jpeg'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
+import CustomCursor from './components/CustomCursor'
+import SmoothScroll from './components/SmoothScroll'
+import Preloader from './components/Preloader'
+import Magnetic from './components/Magnetic'
+import BruceLLM from './components/BruceLLM'
+import previewClip from './assets/circletransition.mp4'
 import './App.css'
+
+const MotionDiv = motion.div
+const MotionA = motion.a
+const MotionP = motion.p
+const MotionH1 = motion.h1
+const MotionArticle = motion.article
 
 const resumeUrl = `${import.meta.env.BASE_URL}Bruce_Moseti_Resume.pdf`
 const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
@@ -17,28 +29,31 @@ const projects = [
     title: 'CueAI',
     role: 'Physics-informed AI simulation',
     year: '2026',
-    copy: 'A predictive billiards platform that combines numerical methods, Monte Carlo simulation, and reusable object-oriented software.',
+    copy: 'Predictive billiards simulation combining numerical methods, Monte Carlo sampling, and reusable object-oriented software.',
     tags: ['Python', 'C++', 'PyTorch', 'NumPy'],
     href: 'https://github.com/BruceMoseti/cueai',
     accent: 'cue',
+    media: 'video',
   },
   {
     title: 'Rootline',
     role: 'Live incident intelligence',
     year: '2026',
-    copy: 'Turns scattered operational signals into grounded context so engineers can move from noise to a usable incident picture faster.',
+    copy: 'Turns scattered operational signals into grounded context so engineers can move from noise to a usable incident picture.',
     tags: ['Python', 'Systems', 'Evidence'],
     href: 'https://github.com/BruceMoseti/rootline',
     accent: 'root',
+    media: 'grid',
   },
   {
     title: 'Energy Grid Dashboard',
     role: 'Time-series analytics',
     year: '2025',
-    copy: 'Visualizes grid performance, outage patterns, and usage anomalies with practical dashboard workflows for operators.',
+    copy: 'Visualizes grid performance, outage patterns, and usage anomalies with practical operator workflows.',
     tags: ['Python', 'Plotly Dash', 'Analytics'],
     href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
     accent: 'grid',
+    media: 'bars',
   },
   {
     title: 'DeepSun',
@@ -48,6 +63,7 @@ const projects = [
     tags: ['CUDA', 'PyTorch', 'DeepStream'],
     href: 'https://github.com/BruceMoseti',
     accent: 'sun',
+    media: 'orbit',
   },
 ]
 
@@ -104,36 +120,83 @@ const skills = [
   { group: 'Web & Tools', items: ['React', 'Node.js', 'Git', 'Docker', 'AWS'] },
 ]
 
-function useReveal() {
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
+}
+
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+}
+
+function ProjectMedia({ project, active }) {
+  const videoRef = useRef(null)
+
   useEffect(() => {
-    const nodes = document.querySelectorAll('[data-reveal]')
-    if (!nodes.length || !('IntersectionObserver' in window)) {
-      nodes.forEach((node) => node.classList.add('is-visible'))
-      return undefined
+    const video = videoRef.current
+    if (!video) return undefined
+    if (active) {
+      const play = video.play()
+      if (play?.catch) play.catch(() => {})
+    } else {
+      video.pause()
+      video.currentTime = 0
     }
+    return undefined
+  }, [active])
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.16, rootMargin: '0px 0px -8% 0px' },
-    )
+  if (project.media === 'video') {
+return (
+    <div className={`project-media type-video tone-${project.accent}${active ? ' active' : ''}`}>
+      <video ref={videoRef} muted loop playsInline preload="metadata" src={previewClip} />
+      <div className="media-veil" />
+    </div>
+  )
+}
 
-    nodes.forEach((node) => observer.observe(node))
-    return () => observer.disconnect()
-  }, [])
+return (
+    <div
+      className={`project-media type-${project.media} tone-${project.accent}${active ? ' active' : ''}`}
+      aria-hidden="true"
+    >
+      <div className="media-orb one" />
+      <div className="media-orb two" />
+      <div className="media-grid" />
+      <div className="media-bars">
+        <span /><span /><span /><span /><span />
+      </div>
+    </div>
+  )
+}
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 28, restDelta: 0.001 })
+  return <MotionDiv className="scroll-progress" style={{ scaleX }} />
 }
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [openExperience, setOpenExperience] = useState(0)
+  const [ready, setReady] = useState(false)
+  const [hoveredProject, setHoveredProject] = useState(null)
+  const [navSolid, setNavSolid] = useState(false)
+  const heroRef = useRef(null)
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 120])
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.15])
 
-  useReveal()
+  useEffect(() => {
+    const onScroll = () => setNavSolid(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
@@ -143,196 +206,309 @@ export default function App() {
   }, [menuOpen])
 
   return (
-    <div className="site">
-      <div className="atmosphere" aria-hidden="true" />
-      <a className="skip-link" href="#content">Skip to content</a>
+    <SmoothScroll>
+      <div className={`site${ready ? ' is-ready' : ''}`}>
+        <Preloader onDone={() => setReady(true)} />
+        <CustomCursor />
+        <ScrollProgress />
+        <div className="noise" aria-hidden="true" />
+        <div className="blob blob-a" aria-hidden="true" />
+        <div className="blob blob-b" aria-hidden="true" />
+        <div className="blob blob-c" aria-hidden="true" />
 
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="Bruce Moseti home">
-          <span className="brand-mark">B</span>
-          <span className="brand-name">Bruce Moseti</span>
-        </a>
+        <a className="skip-link" href="#content">Skip to content</a>
 
-        <nav className="desktop-nav" aria-label="Primary">
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href}>{item.label}</a>
-          ))}
-          <a className="nav-cta" href={resumeUrl} target="_blank" rel="noreferrer">Resume</a>
-        </nav>
+        <header className={`topbar${navSolid ? ' solid' : ''}`}>
+          <Magnetic>
+            <a className="brand" href="#top" data-cursor="hover" aria-label="Bruce Moseti home">
+              <span className="brand-mark">B</span>
+              <span className="brand-name">Bruce Moseti</span>
+            </a>
+          </Magnetic>
 
-        <button
-          className={`menu-toggle${menuOpen ? ' open' : ''}`}
-          type="button"
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          onClick={() => setMenuOpen((value) => !value)}
-        >
-          <span />
-          <span />
-        </button>
-      </header>
-
-      <div id="mobile-nav" className={`mobile-nav${menuOpen ? ' open' : ''}`}>
-        {navItems.map((item) => (
-          <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>
-        ))}
-        <a href={resumeUrl} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Resume</a>
-      </div>
-
-      <main id="content">
-        <section className="hero" id="top">
-          <div className="hero-copy" data-reveal>
-            <p className="hero-kicker">Electrical Engineering · NJIT · Edge AI</p>
-            <h1>Bruce Moseti</h1>
-            <p className="hero-lead">
-              I turn hardware and AI performance problems into systems you can measure—
-              benchmarks, profiling, automation, and cleaner engineering decisions.
-            </p>
-            <div className="hero-actions">
-              <a className="btn primary" href="#work">View work</a>
-              <a className="btn ghost" href="mailto:brucemosetie@gmail.com">Get in touch</a>
-            </div>
-          </div>
-
-          <div className="hero-visual" data-reveal>
-            <div className="hero-frame">
-              <img src={heroArt} alt="Stylized portrait of Bruce Moseti" />
-            </div>
-            <div className="hero-orbit" aria-hidden="true" />
-          </div>
-        </section>
-
-        <section className="section work" id="work">
-          <div className="section-head" data-reveal>
-            <p className="eyebrow">Selected work</p>
-            <h2>Projects built to be measured, debugged, and used.</h2>
-          </div>
-
-          <div className="project-list">
-            {projects.map((project, index) => (
-              <a
-                className={`project-row accent-${project.accent}`}
-                href={project.href}
-                target="_blank"
-                rel="noreferrer"
-                key={project.title}
-                data-reveal
-                style={{ '--delay': `${index * 60}ms` }}
-              >
-                <div className="project-meta">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <span>{project.year}</span>
-                </div>
-                <div className="project-body">
-                  <div className="project-title-row">
-                    <h3>{project.title}</h3>
-                    <span className="project-role">{project.role}</span>
-                  </div>
-                  <p>{project.copy}</p>
-                  <ul className="tag-list">
-                    {project.tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
-                    ))}
-                  </ul>
-                </div>
-                <span className="project-arrow" aria-hidden="true">↗</span>
-                <div className="project-wash" aria-hidden="true" />
-              </a>
+          <nav className="desktop-nav" aria-label="Primary">
+            {navItems.map((item) => (
+              <Magnetic key={item.href} strength={0.35}>
+                <a href={item.href} data-cursor="hover">{item.label}</a>
+              </Magnetic>
             ))}
-          </div>
-        </section>
+            <Magnetic>
+              <a className="nav-cta" href={resumeUrl} target="_blank" rel="noreferrer" data-cursor="hover" data-cursor-label="Open">
+                Resume
+              </a>
+            </Magnetic>
+          </nav>
 
-        <section className="section experience" id="experience">
-          <div className="section-head" data-reveal>
-            <p className="eyebrow">Experience</p>
-            <h2>Where the work got real.</h2>
-          </div>
+          <button
+            className={`menu-toggle${menuOpen ? ' open' : ''}`}
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            data-cursor="hover"
+            onClick={() => setMenuOpen((value) => !value)}
+          >
+            <span />
+            <span />
+          </button>
+        </header>
 
-          <div className="experience-list" data-reveal>
-            {experiences.map((item, index) => {
-              const open = openExperience === index
-              return (
-                <article className={`experience-item${open ? ' open' : ''}`} key={item.company}>
-                  <button
-                    type="button"
-                    className="experience-summary"
-                    aria-expanded={open}
-                    onClick={() => setOpenExperience(open ? -1 : index)}
+        <div id="mobile-nav" className={`mobile-nav${menuOpen ? ' open' : ''}`}>
+          {navItems.map((item, index) => (
+            <a
+              key={item.href}
+              href={item.href}
+              style={{ transitionDelay: `${index * 40}ms` }}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.label}
+            </a>
+          ))}
+          <a href={resumeUrl} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Resume</a>
+        </div>
+
+        <main id="content">
+          <section className="hero" id="top" ref={heroRef}>
+            <MotionDiv className="hero-copy" style={{ y: heroY, opacity: heroOpacity }}>
+              <MotionDiv variants={stagger} initial="hidden" animate={ready ? 'show' : 'hidden'}>
+                <MotionP className="hero-kicker" variants={fadeUp}>
+                  Electrical Engineering · NJIT · Edge AI
+                </MotionP>
+                <MotionH1 variants={fadeUp} className="hero-title">
+                  <span>Bruce</span>
+                  <span>Moseti</span>
+                </MotionH1>
+                <MotionP className="hero-lead" variants={fadeUp}>
+                  I design measurement into machines — benchmarking, profiling, and automation that make
+                  Edge AI systems clearer, faster, and easier to trust.
+                </MotionP>
+                <MotionDiv className="hero-actions" variants={fadeUp}>
+                  <Magnetic>
+                    <a className="btn primary" href="#work" data-cursor="hover" data-cursor-label="Scroll">
+                      View work
+                    </a>
+                  </Magnetic>
+                  <Magnetic>
+                    <a className="btn ghost" href="mailto:brucemosetie@gmail.com" data-cursor="hover" data-cursor-label="Email">
+                      Get in touch
+                    </a>
+                  </Magnetic>
+                </MotionDiv>
+              </MotionDiv>
+            </MotionDiv>
+
+            <div className="hero-stage" aria-hidden="true">
+              <div className="hero-ring" />
+              <div className="hero-wave" />
+            </div>
+          </section>
+
+          <section className="marquee-band" aria-hidden="true">
+            <div className="marquee-track">
+              <span>Edge AI · CUDA · Jetson · Benchmarks · Embedded · Mechatronics · Automation · </span>
+              <span>Edge AI · CUDA · Jetson · Benchmarks · Embedded · Mechatronics · Automation · </span>
+            </div>
+          </section>
+
+          <section className="section work" id="work">
+            <MotionDiv
+              className="section-head"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+            >
+              <p className="eyebrow">Selected work</p>
+              <h2>Projects built to be measured, debugged, and used.</h2>
+            </MotionDiv>
+
+            <div className="project-list">
+              {projects.map((project, index) => (
+                <MotionA
+                  className={`project-row accent-${project.accent}`}
+                  href={project.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  key={project.title}
+                  data-cursor="hover"
+                  data-cursor-label="View"
+                  onMouseEnter={() => setHoveredProject(project.title)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  onFocus={() => setHoveredProject(project.title)}
+                  onBlur={() => setHoveredProject(null)}
+                  initial={{ opacity: 0, y: 36 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ duration: 0.75, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <ProjectMedia project={project} active={hoveredProject === project.title} />
+                  <div className="project-content">
+                    <div className="project-meta">
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                      <span>{project.year}</span>
+                    </div>
+                    <div className="project-body">
+                      <div className="project-title-row">
+                        <h3>{project.title}</h3>
+                        <span className="project-role">{project.role}</span>
+                      </div>
+                      <p>{project.copy}</p>
+                      <ul className="tag-list">
+                        {project.tags.map((tag) => (
+                          <li key={tag}>{tag}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <span className="project-arrow" aria-hidden="true">↗</span>
+                  </div>
+                </MotionA>
+              ))}
+            </div>
+          </section>
+
+          <section className="section experience" id="experience">
+            <MotionDiv
+              className="section-head"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+            >
+              <p className="eyebrow">Experience</p>
+              <h2>Where the work got real.</h2>
+            </MotionDiv>
+
+            <div className="experience-list">
+              {experiences.map((item, index) => {
+                const open = openExperience === index
+                return (
+                  <MotionArticle
+                    className={`experience-item${open ? ' open' : ''}`}
+                    key={item.company}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.65, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <div>
-                      <h3>{item.company}</h3>
-                      <p>{item.role}</p>
-                    </div>
-                    <div className="experience-aside">
-                      <span>{item.date}</span>
-                      <span className="chevron" aria-hidden="true" />
-                    </div>
-                  </button>
-                  <div className="experience-panel" hidden={!open}>
-                    <p className="experience-place">{item.place}</p>
-                    <ul>
-                      {item.bullets.map((bullet) => (
-                        <li key={bullet}>{bullet}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-              )
-            })}
-          </div>
-        </section>
-
-        <section className="section about" id="about">
-          <div className="about-grid" data-reveal>
-            <div className="about-photo">
-              <img src={portraitUrl} alt="Bruce Moseti" />
+                    <button
+                      type="button"
+                      className="experience-summary"
+                      aria-expanded={open}
+                      data-cursor="hover"
+                      data-cursor-label={open ? 'Close' : 'Open'}
+                      onClick={() => setOpenExperience(open ? -1 : index)}
+                    >
+                      <div>
+                        <h3>{item.company}</h3>
+                        <p>{item.role}</p>
+                      </div>
+                      <div className="experience-aside">
+                        <span>{item.date}</span>
+                        <span className="chevron" aria-hidden="true" />
+                      </div>
+                    </button>
+                    <MotionDiv
+                      className="experience-panel"
+                      initial={false}
+                      animate={open ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <div className="experience-panel-inner">
+                        <p className="experience-place">{item.place}</p>
+                        <ul>
+                          {item.bullets.map((bullet) => (
+                            <li key={bullet}>{bullet}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </MotionDiv>
+                  </MotionArticle>
+                )
+              })}
             </div>
-            <div className="about-copy">
-              <p className="eyebrow">About</p>
-              <h2>Engineer enough to automate. Hardware enough to measure.</h2>
-              <p>
-                I’m an Electrical Engineering student at New Jersey Institute of Technology (expected June 2028),
-                currently a Performance Engineering Intern on NVIDIA Edge AI. My work sits between embedded platforms,
-                GPU acceleration, and the tooling that makes performance visible.
-              </p>
-              <p>
-                Dean’s List across Fall 2025, Spring 2025, and Spring 2026. Coursework spans algorithms, computer
-                architecture, embedded systems, and microprocessors.
-              </p>
-              <div className="skill-bands">
-                {skills.map((band) => (
-                  <div key={band.group}>
-                    <h3>{band.group}</h3>
-                    <p>{band.items.join(' · ')}</p>
-                  </div>
-                ))}
+          </section>
+
+          <section className="section about" id="about">
+            <MotionDiv
+              className="about-grid"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="about-photo">
+                <img src={portraitUrl} alt="Bruce Moseti" />
               </div>
-            </div>
-          </div>
-        </section>
+              <div className="about-copy">
+                <p className="eyebrow">About</p>
+                <h2>Engineer enough to automate. Hardware enough to measure.</h2>
+                <p>
+                  I’m an Electrical Engineering student at New Jersey Institute of Technology (expected June 2028),
+                  currently a Performance Engineering Intern on NVIDIA Edge AI. My work sits between embedded platforms,
+                  GPU acceleration, and the tooling that makes performance visible.
+                </p>
+                <p>
+                  Dean’s List across Fall 2025, Spring 2025, and Spring 2026. Coursework spans algorithms, computer
+                  architecture, embedded systems, and microprocessors.
+                </p>
+                <div className="skill-bands">
+                  {skills.map((band) => (
+                    <div key={band.group}>
+                      <h3>{band.group}</h3>
+                      <p>{band.items.join(' · ')}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </MotionDiv>
+          </section>
 
-        <section className="section contact" id="contact">
-          <div className="contact-panel" data-reveal>
-            <p className="eyebrow">Contact</p>
-            <h2>Let’s build something measurable.</h2>
-            <p>
-              Open to engineering roles, research, and projects across Edge AI, embedded systems, and performance tooling.
-            </p>
-            <div className="contact-actions">
-              <a className="btn primary" href="mailto:brucemosetie@gmail.com">brucemosetie@gmail.com</a>
-              <a className="btn ghost" href="https://www.linkedin.com/in/brucemoseti" target="_blank" rel="noreferrer">LinkedIn</a>
-              <a className="btn ghost" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer">GitHub</a>
-              <a className="btn ghost" href={resumeUrl} target="_blank" rel="noreferrer">Resume</a>
-            </div>
-          </div>
-        </section>
-      </main>
+          <section className="section contact" id="contact">
+            <MotionDiv
+              className="contact-panel"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <p className="eyebrow">Contact</p>
+              <h2>Let’s build something measurable.</h2>
+              <p>
+                Open to engineering roles, research, and projects across Edge AI, embedded systems, and performance tooling.
+              </p>
+              <div className="contact-actions">
+                <Magnetic>
+                  <a className="btn primary" href="mailto:brucemosetie@gmail.com" data-cursor="hover" data-cursor-label="Email">
+                    brucemosetie@gmail.com
+                  </a>
+                </Magnetic>
+                <Magnetic>
+                  <a className="btn ghost" href="https://www.linkedin.com/in/brucemoseti" target="_blank" rel="noreferrer" data-cursor="hover">
+                    LinkedIn
+                  </a>
+                </Magnetic>
+                <Magnetic>
+                  <a className="btn ghost" href="https://github.com/BruceMoseti" target="_blank" rel="noreferrer" data-cursor="hover">
+                    GitHub
+                  </a>
+                </Magnetic>
+                <Magnetic>
+                  <a className="btn ghost" href={resumeUrl} target="_blank" rel="noreferrer" data-cursor="hover" data-cursor-label="Open">
+                    Resume
+                  </a>
+                </Magnetic>
+              </div>
+            </MotionDiv>
+          </section>
+        </main>
 
-      <footer className="footer">
-        <span>© {new Date().getFullYear()} Bruce Moseti</span>
-        <span>Built with care in React</span>
-      </footer>
-    </div>
+        <footer className="footer">
+          <span>© {new Date().getFullYear()} Bruce Moseti</span>
+          <span>Crafted with motion, measured with care</span>
+        </footer>
+
+        <BruceLLM />
+      </div>
+    </SmoothScroll>
   )
 }

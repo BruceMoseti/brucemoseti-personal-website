@@ -5,8 +5,25 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   scroll-padding-top: 5rem;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 html,
@@ -18,19 +35,21 @@ body,
 
 body {
   margin: 0;
-  background: #eef3f6;
-  color: #12181f;
+  background: #f7f9fb;
+  color: #171c22;
   font-family: "Outfit", "Segoe UI", sans-serif;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
 }
 
-img {
+img,
+video {
   max-width: 100%;
 }
 
 button,
-a {
+a,
+input {
   -webkit-tap-highlight-color: transparent;
 }
 
