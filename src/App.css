@@ -801,10 +801,22 @@ main {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 0.75rem;
+  align-items: center;
   padding: 1.25rem clamp(1.25rem, 4vw, 3rem) 2rem;
   color: var(--muted);
   font-size: 0.88rem;
   border-top: 1px solid var(--line);
+}
+
+.footer-live {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-live:hover,
+.footer-live:focus-visible {
+  color: var(--ink);
 }
 
 /* Custom cursor — avoid universal * selector for paint cost */

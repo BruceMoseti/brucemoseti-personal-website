@@ -504,6 +504,14 @@ export default function App() {
 
         <footer className="footer">
           <span>© {new Date().getFullYear()} Bruce Moseti</span>
+          <a
+            className="footer-live"
+            href="https://brucemoseti.github.io/brucemoseti-personal-website/"
+            data-cursor="hover"
+            data-cursor-label="Live"
+          >
+            Live site
+          </a>
           <span>Crafted with motion, measured with care</span>
         </footer>
 
