@@ -9,7 +9,6 @@ import previewClip from './assets/circletransition.mp4'
 import './App.css'
 
 const MotionDiv = motion.div
-const MotionA = motion.a
 const MotionP = motion.p
 const MotionH1 = motion.h1
 const MotionArticle = motion.article
@@ -29,43 +28,156 @@ const navItems = [
 const projects = [
   {
     title: 'CueAI',
-    role: 'AI simulation',
+    tagline: 'A physics-informed AI billiards simulation',
     year: '2026',
-    copy: 'A simulation project exploring physics-informed models and numerical methods.',
-    tags: ['Python', 'C++', 'PyTorch'],
-    href: 'https://github.com/BruceMoseti/cueai',
+    summary:
+      'CueAI is a simulation platform that combines classical mechanics with machine learning to predict billiard-ball trajectories. I built it to explore how numerical methods and learned models can work together on a problem that’s both visual and technical.',
+    theProject:
+      'The system models collisions and motion, then uses prediction models to estimate trajectories. I cared about making the pipeline understandable end to end — from physics assumptions to training and visualization — so the results weren’t just accurate, but inspectable.',
+    technical: [
+      'Python and C++ for simulation and core logic',
+      'PyTorch / ONNX for trajectory prediction',
+      'NumPy for numerical methods and analysis',
+      'PyQt for interactive visualization',
+    ],
+    thoughts:
+      'This project was a good excuse to slow down and connect theory with something playable. I spent a lot of time thinking about what “good enough” prediction looks like when the physics is messy, and how to keep the architecture clean enough that I could keep iterating without breaking everything.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/cueai' }],
     accent: 'cue',
     media: 'video',
   },
   {
     title: 'Rootline',
-    role: 'Systems tooling',
+    tagline: 'Live incident intelligence, grounded in evidence',
     year: '2026',
-    copy: 'A project focused on turning scattered signals into clearer operational context.',
-    tags: ['Python', 'Systems'],
-    href: 'https://github.com/BruceMoseti/rootline',
+    summary:
+      'Rootline is a systems project focused on turning scattered operational signals into clearer incident context. The idea was simple: when something breaks, people shouldn’t have to dig through noise to find what actually matters.',
+    theProject:
+      'The project explores how to collect, organize, and present evidence around incidents so the story is easier to follow. I focused on structure and grounding — making sure claims stay connected to the signals behind them.',
+    technical: [
+      'Python for core processing and tooling',
+      'Evidence-oriented data modeling',
+      'Designed for operational readability, not just raw logs',
+    ],
+    thoughts:
+      'I liked working on this because it sits between engineering and communication. Good tooling isn’t only about collecting more data — it’s about helping someone understand what’s going on under pressure.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/rootline' }],
     accent: 'root',
     media: 'grid',
   },
   {
     title: 'Energy Grid Dashboard',
-    role: 'Data visualization',
+    tagline: 'A dashboard for grid performance and usage patterns',
     year: '2025',
-    copy: 'A dashboard for exploring performance trends and usage patterns over time.',
-    tags: ['Python', 'Dash'],
-    href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
+    summary:
+      'A Python and Plotly Dash app that visualizes energy grid performance, outage patterns, and usage anomalies over time. I built it to practice turning time-series data into something operators — or curious engineers — can actually explore.',
+    theProject:
+      'The dashboard surfaces trends and unusual patterns across performance metrics. The goal was to make the charts interactive enough to ask questions quickly, without needing a separate analysis notebook for every view.',
+    technical: [
+      'Python for data processing',
+      'Plotly Dash for interactive charts and layout',
+      'Time-series analytics for outage and usage trends',
+    ],
+    thoughts:
+      'I enjoy projects where the interface is part of the thinking. Building charts forced me to decide what mattered most, what was noise, and how to present uncertainty without overwhelming the page.',
+    links: [
+      {
+        label: 'Github Repo',
+        href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
+      },
+    ],
     accent: 'grid',
     media: 'bars',
   },
   {
     title: 'DeepSun',
-    role: 'Edge inference',
+    tagline: 'AI imaging analysis and GPU-accelerated systems',
     year: '2025',
-    copy: 'Work on accelerating and profiling GPU inference pipelines for edge systems.',
-    tags: ['CUDA', 'PyTorch'],
-    href: 'https://github.com/BruceMoseti',
+    summary:
+      'DeepSun grew out of research work around imaging analysis and GPU-accelerated pipelines. I used it to practice measuring performance, spotting bottlenecks, and turning findings into clearer next steps.',
+    theProject:
+      'The work involved analyzing imaging and performance-style datasets, building reporting tools, and evaluating where AI and GPU approaches could help. Presenting the results clearly — to both technical and non-technical audiences — was part of the project, not an afterthought.',
+    technical: [
+      'Python for analysis and reporting',
+      'GPU-oriented workflows for inference and profiling',
+      'Automated metric tracking to support research priorities',
+      'Presentation-ready summaries for stakeholders',
+    ],
+    thoughts:
+      'This project taught me that performance work is as much about asking the right questions as it is about speed. Measuring carefully made the interesting parts of the system much easier to talk about.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti' }],
     accent: 'sun',
     media: 'orbit',
+  },
+  {
+    title: 'Personal Website',
+    tagline: 'What you’re looking at right now',
+    year: '2026',
+    summary:
+      'This site is a home for my work, interests, and experiments. I wanted something that felt personal without becoming cluttered — a place that looks considered and still stays easy to navigate.',
+    theProject:
+      'The site brings together selected projects, experience, and contact in one place. I designed it with motion and readability in mind, and kept iterating until the interactions felt smooth instead of noisy.',
+    technical: [
+      'React and Vite for the front end',
+      'Framer Motion and Lenis for motion and smooth scrolling',
+      'Custom cursor and lightweight micro-interactions',
+      'GitHub Pages for deployment',
+    ],
+    thoughts:
+      'Building my own site made me care a lot about small details — pacing, hover states, and how much information to show at once. I’m still refining it, but I’m happy it feels like something I can grow with.',
+    links: [
+      { label: 'Github Repo', href: 'https://github.com/BruceMoseti/brucemoseti-personal-website' },
+      { label: 'Live Site', href: 'https://brucemoseti.github.io/brucemoseti-personal-website/' },
+    ],
+    accent: 'cue',
+    media: 'orbit',
+  },
+  {
+    title: 'Solar Energy Irrigation System',
+    tagline: 'Sensors, control logic, and performance data for irrigation automation',
+    year: '2024',
+    summary:
+      'An undergraduate research project integrating sensors, control logic, and data collection for solar-powered irrigation automation. I worked on design, testing, and documenting what improved across iterations.',
+    theProject:
+      'The system was tested across multiple scenarios to evaluate stability, efficiency, and reliability under changing conditions. I focused on connecting hardware behavior with usable performance data.',
+    technical: [
+      'Sensor integration and control logic',
+      'Python for data collection and analysis',
+      'AutoCAD for design documentation',
+      'Iterative testing across multiple scenarios',
+    ],
+    thoughts:
+      'This was one of the first projects where hardware, software, and documentation all had to stay in sync. Seeing how small design tradeoffs showed up in real measurements was a useful lesson.',
+    links: [
+      { label: 'Github Repo', href: 'https://github.com/BruceMoseti/IRAP---INFUSING-RESEARCH-AS-PEDAGOGY' },
+    ],
+    accent: 'grid',
+    media: 'bars',
+  },
+  {
+    title: 'Makerspace Mechatronics',
+    tagline: 'Hands-on manufacturing, electronics, and system troubleshooting',
+    year: '2025',
+    summary:
+      'Documentation and work from NJIT’s Advanced Manufacturing and Mechatronics Training Program. It covers prototyping, electronics assembly, and learning how physical systems come together in practice.',
+    theProject:
+      'The program emphasized building and debugging real hardware — from fabrication basics to electromechanical integration — with a focus on making things work, then understanding why they work.',
+    technical: [
+      'Hardware prototyping and fabrication',
+      'Electronics assembly and debugging',
+      'Mechatronics and sensory integration fundamentals',
+      'Documentation of process and troubleshooting notes',
+    ],
+    thoughts:
+      'Working in the makerspace reminded me how much engineering is learned by touching the problem. Software skills help, but physical systems force you to confront constraints you can’t abstract away.',
+    links: [
+      {
+        label: 'Github Repo',
+        href: 'https://github.com/BruceMoseti/NJIT-Makerspace-Advanced-Manufacturing-and-Mechatronics-Training-Program',
+      },
+    ],
+    accent: 'root',
+    media: 'grid',
   },
 ]
 
@@ -193,15 +305,15 @@ function ProjectMedia({ project, active }) {
   }, [active])
 
   if (project.media === 'video') {
-return (
-    <div className={`project-media type-video tone-${project.accent}${active ? ' active' : ''}`}>
-      <video ref={videoRef} muted loop playsInline preload="metadata" src={previewClip} />
-      <div className="media-veil" />
-    </div>
-  )
-}
+    return (
+      <div className={`project-media type-video tone-${project.accent}${active ? ' active' : ''}`}>
+        <video ref={videoRef} muted loop playsInline preload="metadata" src={previewClip} />
+        <div className="media-veil" />
+      </div>
+    )
+  }
 
-return (
+  return (
     <div
       className={`project-media type-${project.media} tone-${project.accent}${active ? ' active' : ''}`}
       aria-hidden="true"
@@ -213,6 +325,93 @@ return (
         <span /><span /><span /><span /><span />
       </div>
     </div>
+  )
+}
+
+function ProjectCard({ project, index, hovered, onHover }) {
+  const [open, setOpen] = useState(false)
+  const panelId = `project-details-${index}`
+
+  return (
+    <MotionArticle
+      className={`project-row accent-${project.accent}${open ? ' is-open' : ''}`}
+      onMouseEnter={() => onHover(project.title)}
+      onMouseLeave={() => onHover(null)}
+      initial={{ opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.75, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <ProjectMedia project={project} active={hovered || open} />
+      <div className="project-content">
+        <div className="project-meta">
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <span>{project.year}</span>
+        </div>
+        <div className="project-body">
+          <div className="project-title-row">
+            <h3>{project.title}</h3>
+            <span className="project-role">{project.tagline}</span>
+          </div>
+          <p>{project.summary}</p>
+
+          <MotionDiv
+            id={panelId}
+            className="project-details"
+            initial={false}
+            animate={open ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="project-details-inner">
+              <div className="project-detail-block">
+                <h4>The Project</h4>
+                <p>{project.theProject}</p>
+              </div>
+              <div className="project-detail-block">
+                <h4>Technical Overview</h4>
+                <ul>
+                  {project.technical.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="project-detail-block">
+                <h4>Thoughts</h4>
+                <p>{project.thoughts}</p>
+              </div>
+              {project.links?.length ? (
+                <div className="project-links">
+                  {project.links.map((link) => (
+                    <a
+                      key={`${link.label}-${link.href}`}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-cursor="hover"
+                      data-cursor-label="Open"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </MotionDiv>
+
+          <button
+            type="button"
+            className="project-toggle"
+            aria-expanded={open}
+            aria-controls={panelId}
+            data-cursor="hover"
+            data-cursor-label={open ? 'Close' : 'More'}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? 'Show Less' : 'Show More'}
+          </button>
+        </div>
+      </div>
+    </MotionArticle>
   )
 }
 
@@ -363,48 +562,20 @@ export default function App() {
             >
               <p className="eyebrow">Selected work</p>
               <h2>A few things I’ve built and explored.</h2>
+              <p className="section-note">
+                For each project, you can click on Show More for details about the technical process and my thoughts.
+              </p>
             </MotionDiv>
 
             <div className="project-list">
               {projects.map((project, index) => (
-                <MotionA
-                  className={`project-row accent-${project.accent}`}
-                  href={project.href}
-                  target="_blank"
-                  rel="noreferrer"
+                <ProjectCard
                   key={project.title}
-                  data-cursor="hover"
-                  data-cursor-label="View"
-                  onMouseEnter={() => setHoveredProject(project.title)}
-                  onMouseLeave={() => setHoveredProject(null)}
-                  onFocus={() => setHoveredProject(project.title)}
-                  onBlur={() => setHoveredProject(null)}
-                  initial={{ opacity: 0, y: 36 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.25 }}
-                  transition={{ duration: 0.75, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <ProjectMedia project={project} active={hoveredProject === project.title} />
-                  <div className="project-content">
-                    <div className="project-meta">
-                      <span>{String(index + 1).padStart(2, '0')}</span>
-                      <span>{project.year}</span>
-                    </div>
-                    <div className="project-body">
-                      <div className="project-title-row">
-                        <h3>{project.title}</h3>
-                        <span className="project-role">{project.role}</span>
-                      </div>
-                      <p>{project.copy}</p>
-                      <ul className="tag-list">
-                        {project.tags.map((tag) => (
-                          <li key={tag}>{tag}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <span className="project-arrow" aria-hidden="true">↗</span>
-                  </div>
-                </MotionA>
+                  project={project}
+                  index={index}
+                  hovered={hoveredProject === project.title}
+                  onHover={setHoveredProject}
+                />
               ))}
             </div>
           </section>
