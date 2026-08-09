@@ -11,7 +11,11 @@ const knowledge = [
   },
   {
     keys: ['nokia'],
-    answer: 'At Nokia I’m an Optoelectronics Test Development Co-op in Allentown, PA.',
+    answer: 'At Nokia I was an Optoelectronics Test Development Co-op in Allentown, PA (Sep 2025 — Apr 2026).',
+  },
+  {
+    keys: ['nvidia', 'current', 'now'],
+    answer: 'I’m currently a Performance Engineering Intern, Edge AI at NVIDIA (May 2026 — Present).',
   },
   {
     keys: ['pseg'],

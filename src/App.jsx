@@ -193,7 +193,7 @@ const experiences = [
     company: 'Nokia',
     role: 'Optoelectronics Test Development Co-op',
     place: 'Allentown, PA',
-    date: 'Sep 2025 — Present',
+    date: 'Sep 2025 — Apr 2026',
     bullets: [],
   },
   {
