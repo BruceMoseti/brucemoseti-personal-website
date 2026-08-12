@@ -14,6 +14,7 @@ const MotionDiv = motion.div
 const MotionP = motion.p
 const MotionH1 = motion.h1
 const MotionArticle = motion.article
+const MotionLi = motion.li
 
 const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
 const linkedInUrl = 'https://www.linkedin.com/in/bruce-moseti-9553172a9/'
@@ -318,23 +319,29 @@ const projects = [
 const experiences = [
   {
     company: 'NVIDIA',
+    logo: 'nvidia',
     role: 'Performance Engineering Intern, Edge AI',
-    place: 'Internship',
+    kind: 'Internship',
     date: 'May 2026 — Present',
+    summary: 'Performance engineering for edge AI systems.',
     bullets: [],
   },
   {
     company: 'Nokia',
     role: 'Optoelectronics Test Development Co-op',
     place: 'Allentown, PA',
+    kind: 'Co-op',
     date: 'Sep 2025 — Apr 2026',
+    summary: 'Test development for optoelectronics hardware, based at Nokia’s Allentown site.',
     bullets: [],
   },
   {
     company: 'CIBM3 Labs',
     role: 'Research Assistant',
-    place: 'On-site',
+    kind: 'On-site',
     date: 'Jun 2025 — Sep 2025',
+    summary:
+      'Turned raw experiment output into structured datasets, and automated the Python workflows behind the lab’s weekly reporting.',
     bullets: [
       'Supported lab research by building structured datasets from experiments and extracting usable metrics for analysis.',
       'Automated data cleaning and analysis workflows in Python, improving turnaround time for weekly reporting.',
@@ -345,15 +352,18 @@ const experiences = [
   {
     company: 'PSEG',
     role: 'Technical Solutions Intern',
-    place: 'Internship',
+    kind: 'Internship',
     date: 'Jun 2025 — Aug 2025',
+    summary: 'Technical solutions internship in the energy sector.',
     bullets: [],
   },
   {
     company: 'NJIT Makerspace',
     role: 'Advanced Manufacturing and Mechatronics Training Program',
-    place: 'Apprenticeship',
+    kind: 'Apprenticeship',
     date: 'Jun 2025 — Aug 2025',
+    summary:
+      'Hands-on prototyping and fabrication work across hardware development, electronics assembly, and mechatronics.',
     bullets: [
       'Hands-on prototyping and fabrication focused on hardware development, electronics assembly, and troubleshooting.',
       'Worked across sensory integration, hardware development, and mechatronics fundamentals.',
@@ -362,8 +372,10 @@ const experiences = [
   {
     company: 'STEM Success Academy',
     role: 'Student',
-    place: 'Apprenticeship',
+    kind: 'Apprenticeship',
     date: 'Jun 2025 — Jul 2025',
+    summary:
+      'Engineering fundamentals with an emphasis on electrical systems, circuit analysis, and electromechanical integration.',
     bullets: [
       'Studied fundamental engineering topics with emphasis on electrical systems, circuit analysis, and electromechanical integration.',
       'Prototyped and fabricated in the NJIT Makerspace, focusing on hardware, electronics assembly, and system troubleshooting.',
@@ -373,8 +385,11 @@ const experiences = [
   {
     company: 'Space Weather',
     role: 'AI Imaging Analysis and GPU-Accelerated Systems',
-    place: 'NVIDIA DeepSun Project · Internship',
+    place: 'NVIDIA DeepSun Project',
+    kind: 'Internship',
     date: 'Apr 2025 — Jun 2025',
+    summary:
+      'Analyzed imaging and performance datasets, then built the Python reporting tools that tracked what the analysis found.',
     bullets: [
       'Analyzed imaging and performance datasets to identify patterns, bottlenecks, and improvement opportunities.',
       'Built automated Python reporting tools to track key metrics and support research priorities.',
@@ -385,15 +400,18 @@ const experiences = [
   {
     company: 'EN-POWER GROUP',
     role: 'Mechanical Design Engineer Intern',
-    place: 'Internship',
+    kind: 'Internship',
     date: 'Dec 2024 — Jun 2025',
+    summary: 'Mechanical design engineering internship.',
     bullets: [],
   },
   {
     company: 'Infusing Research as Pedagogy',
     role: 'Undergraduate Research Assistant, Solar Energy Irrigation System',
-    place: 'Apprenticeship',
+    kind: 'Apprenticeship',
     date: 'Dec 2023 — Jun 2024',
+    summary:
+      'Designed and tested a solar-powered irrigation system, then analyzed how it held up across test scenarios.',
     bullets: [
       'Designed and tested a system integrating sensors, control logic, and performance data collection for irrigation automation.',
       'Analyzed operational data across test scenarios to evaluate stability, efficiency, and reliability.',
@@ -404,6 +422,15 @@ const experiences = [
 
 // The tech strip covers the stack with logos; these are the pieces without one.
 const alsoWorkingWith = ['CUDA', 'TensorRT', 'DeepStream', 'Embedded systems', 'Java', 'SQL', 'Node.js', 'AWS']
+
+const PROJECTS_SHOWN = 6
+
+// Stands in for a logo on the employers that have no usable brand mark.
+function initialsOf(company) {
+  const words = company.split(/[\s-]+/).filter((word) => /[a-z0-9]/i.test(word))
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase()
+  return words.slice(0, 2).map((word) => word[0].toUpperCase()).join('')
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -541,7 +568,7 @@ function ScrollProgress() {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [openExperience, setOpenExperience] = useState(-1)
+  const [allProjects, setAllProjects] = useState(false)
   const [ready, setReady] = useState(false)
   const [hoveredProject, setHoveredProject] = useState(null)
   const [navSolid, setNavSolid] = useState(false)
@@ -697,73 +724,45 @@ export default function App() {
               viewport={{ once: true, amount: 0.4 }}
             >
               <p className="eyebrow">Experience</p>
-              <h2>Where I’ve worked.</h2>
+              <h2>Experience</h2>
               <p className="section-note">
-                Internships, co-ops, and research roles, most recent first. Click a role for details.
+                Internships, co-ops, and research roles, most recent first.
               </p>
             </MotionDiv>
 
-            <div className="experience-list">
-              {experiences.map((item, index) => {
-                const hasDetail = item.bullets.length > 0
-                const open = hasDetail && openExperience === index
-                const summary = (
-                  <>
-                    <div>
-                      <h3>{item.company}</h3>
-                      <p>{item.role}</p>
-                      {item.place ? <p className="experience-place">{item.place}</p> : null}
-                    </div>
-                    <div className="experience-aside">
+            <ol className="timeline">
+              {experiences.map((item, index) => (
+                <MotionLi
+                  className="timeline-item"
+                  key={`${item.company}-${item.role}`}
+                  initial={{ opacity: 0, y: 22 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.6, delay: Math.min(index, 5) * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <span className="timeline-marker" aria-hidden="true">
+                    {item.logo ? <BrandIcon slug={item.logo} size={20} /> : initialsOf(item.company)}
+                  </span>
+                  <div className="timeline-body">
+                    <p className="timeline-company">{item.company}</p>
+                    <h3>{item.role}</h3>
+                    <p className="timeline-meta">
                       <span>{item.date}</span>
-                      {hasDetail ? <span className="chevron" aria-hidden="true" /> : null}
-                    </div>
-                  </>
-                )
-
-                return (
-                  <MotionArticle
-                    className={`experience-item${open ? ' open' : ''}`}
-                    key={`${item.company}-${item.role}`}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.65, delay: Math.min(index, 6) * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {hasDetail ? (
-                      <button
-                        type="button"
-                        className="experience-summary"
-                        aria-expanded={open}
-                        data-cursor="hover"
-                        data-cursor-label={open ? 'Close' : 'Open'}
-                        onClick={() => setOpenExperience(open ? -1 : index)}
-                      >
-                        {summary}
-                      </button>
-                    ) : (
-                      <div className="experience-summary is-static">{summary}</div>
-                    )}
-                    {hasDetail ? (
-                      <MotionDiv
-                        className="experience-panel"
-                        initial={false}
-                        animate={open ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
-                        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        <div className="experience-panel-inner">
-                          <ul>
-                            {item.bullets.map((bullet) => (
-                              <li key={bullet}>{bullet}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </MotionDiv>
+                      {item.place ? <span>{item.place}</span> : null}
+                      {item.kind ? <span>{item.kind}</span> : null}
+                    </p>
+                    {item.summary ? <p className="timeline-summary">{item.summary}</p> : null}
+                    {item.bullets.length > 0 ? (
+                      <ul>
+                        {item.bullets.map((bullet) => (
+                          <li key={bullet}>{bullet}</li>
+                        ))}
+                      </ul>
                     ) : null}
-                  </MotionArticle>
-                )
-              })}
-            </div>
+                  </div>
+                </MotionLi>
+              ))}
+            </ol>
           </section>
 
           <section className="section work" id="work">
@@ -782,7 +781,7 @@ export default function App() {
             </MotionDiv>
 
             <div className="project-list">
-              {projects.map((project, index) => (
+              {(allProjects ? projects : projects.slice(0, PROJECTS_SHOWN)).map((project, index) => (
                 <ProjectCard
                   key={project.title}
                   project={project}
@@ -792,6 +791,20 @@ export default function App() {
                 />
               ))}
             </div>
+
+            {projects.length > PROJECTS_SHOWN ? (
+              <div className="view-all">
+                <button
+                  type="button"
+                  className="btn ghost"
+                  data-cursor="hover"
+                  data-cursor-label={allProjects ? 'Less' : 'More'}
+                  onClick={() => setAllProjects((value) => !value)}
+                >
+                  {allProjects ? 'Show fewer projects' : `View all ${projects.length} projects`}
+                </button>
+              </div>
+            ) : null}
           </section>
 
           <section className="section about" id="about">
