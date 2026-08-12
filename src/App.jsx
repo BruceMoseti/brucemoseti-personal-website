@@ -16,6 +16,7 @@ const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
 const linkedInUrl = 'https://www.linkedin.com/in/bruce-moseti-9553172a9/'
 const githubUrl = 'https://github.com/BruceMoseti'
 const emailUrl = 'mailto:brucemosetie@gmail.com'
+const siteUrl = 'https://brucemoseti.github.io/brucemoseti-personal-website/'
 
 const navItems = [
   { label: 'Work', href: '#work' },
@@ -324,7 +325,7 @@ const projects = [
       'Building my own site made me care a lot about small details — pacing, hover states, and how much information to show at once. I’m still refining it, but I’m happy it feels like something I can grow with.',
     links: [
       { label: 'Github Repo', href: 'https://github.com/BruceMoseti/brucemoseti-personal-website' },
-      { label: 'Live Site', href: 'https://brucemoseti.github.io/brucemoseti-personal-website/' },
+      { label: 'Live Site', href: siteUrl },
     ],
     accent: 'cue',
     media: 'orbit',
@@ -909,7 +910,7 @@ export default function App() {
           <span>© {new Date().getFullYear()} Bruce Moseti</span>
           <a
             className="footer-live"
-            href="https://brucemoseti.github.io/brucemoseti-personal-website/"
+            href={siteUrl}
             data-cursor="hover"
             data-cursor-label="Live"
           >
