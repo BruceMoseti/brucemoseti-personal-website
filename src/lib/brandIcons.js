@@ -9,6 +9,7 @@ import {
   siGithub,
   siLinux,
   siNextdotjs,
+  siNokia,
   siNumpy,
   siNvidia,
   siOnnx,
@@ -35,6 +36,7 @@ const icons = {
   github: siGithub,
   linux: siLinux,
   nextdotjs: siNextdotjs,
+  nokia: siNokia,
   numpy: siNumpy,
   nvidia: siNvidia,
   onnx: siOnnx,
@@ -47,6 +49,17 @@ const icons = {
   react: siReact,
   solidity: siSolidity,
   typescript: siTypescript,
+}
+
+// Wordmarks sit as a short strip inside the square 24x24 viewBox, so they render as an
+// illegible sliver at icon size. Cropping to the glyph lets them be drawn wide instead.
+// Values measured from the rendered path bounding box for the pinned simple-icons version.
+const wordmarks = {
+  nokia: { viewBox: '0 9.18 24 5.65', ratio: 24 / 5.65, scale: 1.6 },
+}
+
+export function getWordmark(slug) {
+  return wordmarks[slug] ?? null
 }
 
 // Several brand colours are close to black, which disappears on a dark background.

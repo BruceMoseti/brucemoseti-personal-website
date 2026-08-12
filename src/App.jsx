@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
-import { Mail, MapPin } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import BrandIcon, { LinkedInIcon } from './components/BrandIcon'
 import TechStrip from './components/TechStrip'
 import CustomCursor from './components/CustomCursor'
@@ -216,32 +216,6 @@ const projects = [
     media: 'orbit',
   },
   {
-    title: 'Energy Grid Dashboard',
-    tagline: 'A dashboard for grid performance and usage patterns',
-    year: '2025',
-    image: null,
-    stack: ['Python', 'Plotly Dash', 'Pandas', 'Time-series analytics'],
-    summary:
-      'A Python and Plotly Dash app that visualizes energy grid performance, outage patterns, and usage anomalies over time. I built it to practice turning time-series data into something operators — or curious engineers — can actually explore.',
-    theProject:
-      'The dashboard surfaces trends and unusual patterns across performance metrics. The goal was to make the charts interactive enough to ask questions quickly, without needing a separate analysis notebook for every view.',
-    technical: [
-      'Python for data processing',
-      'Plotly Dash for interactive charts and layout',
-      'Time-series analytics for outage and usage trends',
-    ],
-    thoughts:
-      'I enjoy projects where the interface is part of the thinking. Building charts forced me to decide what mattered most, what was noise, and how to present uncertainty without overwhelming the page.',
-    links: [
-      {
-        label: 'Github Repo',
-        href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
-      },
-    ],
-    accent: 'grid',
-    media: 'bars',
-  },
-  {
     title: 'DeepSun',
     tagline: 'AI imaging analysis and GPU-accelerated systems',
     year: '2025',
@@ -328,17 +302,16 @@ const experiences = [
   },
   {
     company: 'Nokia',
+    logo: 'nokia',
     role: 'Optoelectronics Test Development Co-op',
-    place: 'Allentown, PA',
     kind: 'Co-op',
     date: 'Sep 2025 — Apr 2026',
-    summary: 'Test development for optoelectronics hardware, based at Nokia’s Allentown site.',
+    summary: 'Test development for optoelectronics hardware.',
     bullets: [],
   },
   {
     company: 'CIBM3 Labs',
     role: 'Research Assistant',
-    kind: 'On-site',
     date: 'Jun 2025 — Sep 2025',
     summary:
       'Turned raw experiment output into structured datasets, and automated the Python workflows behind the lab’s weekly reporting.',
@@ -385,11 +358,10 @@ const experiences = [
   {
     company: 'Space Weather',
     role: 'AI Imaging Analysis and GPU-Accelerated Systems',
-    place: 'NVIDIA DeepSun Project',
     kind: 'Internship',
     date: 'Apr 2025 — Jun 2025',
     summary:
-      'Analyzed imaging and performance datasets, then built the Python reporting tools that tracked what the analysis found.',
+      'Part of the NVIDIA DeepSun project. Analyzed imaging and performance datasets, then built the Python reporting tools that tracked what the analysis found.',
     bullets: [
       'Analyzed imaging and performance datasets to identify patterns, bottlenecks, and improvement opportunities.',
       'Built automated Python reporting tools to track key metrics and support research priorities.',
@@ -560,6 +532,20 @@ function ProjectCard({ project, index, hovered, onHover }) {
   )
 }
 
+// Brand icon where a trademark-cleared one exists, otherwise a file dropped into
+// public/logos, otherwise the company's initials.
+function CompanyMark({ item }) {
+  const [imageFailed, setImageFailed] = useState(false)
+
+  if (item.logo) return <BrandIcon slug={item.logo} size={20} />
+
+  if (item.logoSrc && !imageFailed) {
+    return <img className="timeline-logo" src={item.logoSrc} alt="" onError={() => setImageFailed(true)} />
+  }
+
+  return initialsOf(item.company)
+}
+
 function ScrollProgress() {
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 28, restDelta: 0.001 })
@@ -666,10 +652,6 @@ export default function App() {
                 <MotionH1 variants={fadeUp} className="profile-name">
                   Bruce Moseti
                 </MotionH1>
-                <MotionP variants={fadeUp} className="profile-location">
-                  <MapPin size={17} aria-hidden="true" />
-                  New Jersey
-                </MotionP>
                 <MotionP variants={fadeUp} className="profile-role">
                   Performance Engineering Intern, Edge AI @NVIDIA | Electrical Engineering @NJIT
                 </MotionP>
@@ -741,14 +723,13 @@ export default function App() {
                   transition={{ duration: 0.6, delay: Math.min(index, 5) * 0.04, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <span className="timeline-marker" aria-hidden="true">
-                    {item.logo ? <BrandIcon slug={item.logo} size={20} /> : initialsOf(item.company)}
+                    <CompanyMark item={item} />
                   </span>
                   <div className="timeline-body">
                     <p className="timeline-company">{item.company}</p>
                     <h3>{item.role}</h3>
                     <p className="timeline-meta">
                       <span>{item.date}</span>
-                      {item.place ? <span>{item.place}</span> : null}
                       {item.kind ? <span>{item.kind}</span> : null}
                     </p>
                     {item.summary ? <p className="timeline-summary">{item.summary}</p> : null}

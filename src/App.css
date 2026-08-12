@@ -289,17 +289,8 @@ main {
   letter-spacing: -0.035em;
 }
 
-.profile-location {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0.7rem 0 0;
-  color: var(--muted);
-  font-size: 1.05rem;
-}
-
 .profile-role {
-  margin: 1.1rem 0 0;
+  margin: 1rem 0 0;
   color: var(--ink);
   font-size: clamp(1rem, 2.2vw, 1.12rem);
   line-height: 1.55;
@@ -840,6 +831,12 @@ main {
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+}
+
+.timeline-logo {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
 }
 
 .timeline-company {
