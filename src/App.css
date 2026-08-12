@@ -321,6 +321,34 @@ main {
   margin-top: 1.8rem;
 }
 
+.hero-facts {
+  margin-top: 2.2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  max-width: 34rem;
+}
+
+.hero-facts dl {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+}
+
+.hero-facts dt {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero-facts dd {
+  margin: 0.2rem 0 0;
+  color: var(--ink);
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -700,10 +728,6 @@ main {
 
 .about-copy p,
 .contact-panel p,
-.experience-place {
-  max-width: 38rem;
-}
-
 .project-summary {
   margin: 0;
   font-size: 0.97rem;
@@ -813,10 +837,13 @@ main {
 }
 
 .experience-place {
-  margin: 0 0 0.75rem;
-  color: var(--accent);
-  font-weight: 600;
-  font-size: 0.9rem;
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.experience-summary.is-static {
+  cursor: default;
 }
 
 .experience-panel ul {

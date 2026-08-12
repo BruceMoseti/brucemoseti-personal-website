@@ -16,9 +16,8 @@ npm run dev
 The site builds for two hosts. Vite's `base` switches automatically: Vercel serves from the
 domain root, GitHub Pages serves from `/brucemoseti-personal-website/`.
 
-**Vercel** — import this repo at [vercel.com/new](https://vercel.com/new) and deploy. The
-settings in `vercel.json` are picked up automatically, so no build configuration is needed.
-Every push to `main` then redeploys on its own.
+**Vercel** — connected to this repo, so every push to `main` redeploys. Build settings come
+from `vercel.json`; nothing needs configuring in the dashboard.
 
 **GitHub Pages** — `npm run deploy` builds and force-pushes `dist/` to the `gh-pages` branch.
 

@@ -16,13 +16,19 @@ const portraitUrl = `${import.meta.env.BASE_URL}bruce.png`
 const linkedInUrl = 'https://www.linkedin.com/in/bruce-moseti-9553172a9/'
 const githubUrl = 'https://github.com/BruceMoseti'
 const emailUrl = 'mailto:brucemosetie@gmail.com'
-const siteUrl = 'https://brucemoseti.github.io/brucemoseti-personal-website/'
+const repoUrl = 'https://github.com/BruceMoseti/brucemoseti-personal-website'
 
 const navItems = [
-  { label: 'Work', href: '#work' },
   { label: 'Experience', href: '#experience' },
+  { label: 'Projects', href: '#work' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
+]
+
+const heroFacts = [
+  { label: 'Now', value: 'Performance Engineering Intern, Edge AI at NVIDIA' },
+  { label: 'Studying', value: 'Electrical Engineering at NJIT' },
+  { label: 'Focus', value: 'Edge AI, embedded systems, performance' },
 ]
 
 const shot = (file) => `${import.meta.env.BASE_URL}projects/${file}`
@@ -324,8 +330,7 @@ const projects = [
     thoughts:
       'Building my own site made me care a lot about small details — pacing, hover states, and how much information to show at once. I’m still refining it, but I’m happy it feels like something I can grow with.',
     links: [
-      { label: 'Github Repo', href: 'https://github.com/BruceMoseti/brucemoseti-personal-website' },
-      { label: 'Live Site', href: siteUrl },
+      { label: 'Github Repo', href: repoUrl },
     ],
     accent: 'cue',
     media: 'orbit',
@@ -612,7 +617,7 @@ function ScrollProgress() {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [openExperience, setOpenExperience] = useState(0)
+  const [openExperience, setOpenExperience] = useState(-1)
   const [ready, setReady] = useState(false)
   const [hoveredProject, setHoveredProject] = useState(null)
   const [navSolid, setNavSolid] = useState(false)
@@ -715,8 +720,8 @@ export default function App() {
                 </MotionP>
                 <MotionDiv className="hero-actions" variants={fadeUp}>
                   <Magnetic>
-                    <a className="btn primary" href="#work" data-cursor="hover" data-cursor-label="Scroll">
-                      View work
+                    <a className="btn primary" href="#experience" data-cursor="hover" data-cursor-label="Scroll">
+                      View experience
                     </a>
                   </Magnetic>
                   <Magnetic>
@@ -724,6 +729,16 @@ export default function App() {
                       Get in touch
                     </a>
                   </Magnetic>
+                </MotionDiv>
+                <MotionDiv className="hero-facts" variants={fadeUp}>
+                  <dl>
+                    {heroFacts.map((fact) => (
+                      <div key={fact.label}>
+                        <dt>{fact.label}</dt>
+                        <dd>{fact.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
                 </MotionDiv>
               </MotionDiv>
             </MotionDiv>
@@ -741,6 +756,84 @@ export default function App() {
             </div>
           </section>
 
+          <section className="section experience" id="experience">
+            <MotionDiv
+              className="section-head"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+            >
+              <p className="eyebrow">Experience</p>
+              <h2>Where I’ve worked.</h2>
+              <p className="section-note">
+                Internships, co-ops, and research roles, most recent first. Click a role for details.
+              </p>
+            </MotionDiv>
+
+            <div className="experience-list">
+              {experiences.map((item, index) => {
+                const hasDetail = item.bullets.length > 0
+                const open = hasDetail && openExperience === index
+                const summary = (
+                  <>
+                    <div>
+                      <h3>{item.company}</h3>
+                      <p>{item.role}</p>
+                      {item.place ? <p className="experience-place">{item.place}</p> : null}
+                    </div>
+                    <div className="experience-aside">
+                      <span>{item.date}</span>
+                      {hasDetail ? <span className="chevron" aria-hidden="true" /> : null}
+                    </div>
+                  </>
+                )
+
+                return (
+                  <MotionArticle
+                    className={`experience-item${open ? ' open' : ''}`}
+                    key={`${item.company}-${item.role}`}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.65, delay: Math.min(index, 6) * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {hasDetail ? (
+                      <button
+                        type="button"
+                        className="experience-summary"
+                        aria-expanded={open}
+                        data-cursor="hover"
+                        data-cursor-label={open ? 'Close' : 'Open'}
+                        onClick={() => setOpenExperience(open ? -1 : index)}
+                      >
+                        {summary}
+                      </button>
+                    ) : (
+                      <div className="experience-summary is-static">{summary}</div>
+                    )}
+                    {hasDetail ? (
+                      <MotionDiv
+                        className="experience-panel"
+                        initial={false}
+                        animate={open ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
+                        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <div className="experience-panel-inner">
+                          <ul>
+                            {item.bullets.map((bullet) => (
+                              <li key={bullet}>{bullet}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </MotionDiv>
+                    ) : null}
+                  </MotionArticle>
+                )
+              })}
+            </div>
+          </section>
+
           <section className="section work" id="work">
             <MotionDiv
               className="section-head"
@@ -749,7 +842,7 @@ export default function App() {
               whileInView="show"
               viewport={{ once: true, amount: 0.4 }}
             >
-              <p className="eyebrow">Selected work</p>
+              <p className="eyebrow">Projects</p>
               <h2>A few things I’ve built and explored.</h2>
               <p className="section-note">
                 For each project, you can click on Show More for details about the technical process and my thoughts.
@@ -766,70 +859,6 @@ export default function App() {
                   onHover={setHoveredProject}
                 />
               ))}
-            </div>
-          </section>
-
-          <section className="section experience" id="experience">
-            <MotionDiv
-              className="section-head"
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.4 }}
-            >
-              <p className="eyebrow">Experience</p>
-              <h2>Places I’ve learned by building.</h2>
-            </MotionDiv>
-
-            <div className="experience-list">
-              {experiences.map((item, index) => {
-                const open = openExperience === index
-                return (
-                  <MotionArticle
-                    className={`experience-item${open ? ' open' : ''}`}
-                    key={`${item.company}-${item.role}`}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.65, delay: Math.min(index, 6) * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <button
-                      type="button"
-                      className="experience-summary"
-                      aria-expanded={open}
-                      data-cursor="hover"
-                      data-cursor-label={open ? 'Close' : 'Open'}
-                      onClick={() => setOpenExperience(open ? -1 : index)}
-                    >
-                      <div>
-                        <h3>{item.company}</h3>
-                        <p>{item.role}</p>
-                      </div>
-                      <div className="experience-aside">
-                        <span>{item.date}</span>
-                        <span className="chevron" aria-hidden="true" />
-                      </div>
-                    </button>
-                    <MotionDiv
-                      className="experience-panel"
-                      initial={false}
-                      animate={open ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
-                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <div className="experience-panel-inner">
-                        {item.place ? <p className="experience-place">{item.place}</p> : null}
-                        {item.bullets.length > 0 ? (
-                          <ul>
-                            {item.bullets.map((bullet) => (
-                              <li key={bullet}>{bullet}</li>
-                            ))}
-                          </ul>
-                        ) : null}
-                      </div>
-                    </MotionDiv>
-                  </MotionArticle>
-                )
-              })}
             </div>
           </section>
 
@@ -910,11 +939,13 @@ export default function App() {
           <span>© {new Date().getFullYear()} Bruce Moseti</span>
           <a
             className="footer-live"
-            href={siteUrl}
+            href={repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             data-cursor="hover"
-            data-cursor-label="Live"
+            data-cursor-label="Open"
           >
-            Live site
+            Source
           </a>
           <span>Crafted with motion, measured with care</span>
         </footer>
