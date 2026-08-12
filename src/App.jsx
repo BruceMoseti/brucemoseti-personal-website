@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
+import { Mail, MapPin } from 'lucide-react'
+import BrandIcon, { LinkedInIcon } from './components/BrandIcon'
+import TechStrip from './components/TechStrip'
 import CustomCursor from './components/CustomCursor'
 import SmoothScroll from './components/SmoothScroll'
 import Preloader from './components/Preloader'
@@ -23,12 +26,6 @@ const navItems = [
   { label: 'Projects', href: '#work' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
-]
-
-const heroFacts = [
-  { label: 'Now', value: 'Performance Engineering Intern, Edge AI at NVIDIA' },
-  { label: 'Studying', value: 'Electrical Engineering at NJIT' },
-  { label: 'Focus', value: 'Edge AI, embedded systems, performance' },
 ]
 
 const shot = (file) => `${import.meta.env.BASE_URL}projects/${file}`
@@ -173,52 +170,6 @@ const projects = [
     media: 'bars',
   },
   {
-    title: 'firstpass',
-    tagline: 'Job search and resume tailoring that runs entirely in your browser',
-    year: '2026',
-    image: shot('firstpass.webp'),
-    stack: ['TypeScript', 'Client-side crypto', 'Static hosting'],
-    summary:
-      'firstpass finds roles, tailors a resume against a specific posting, and gets it ready to send. It’s built so that your profile never leaves your machine — the whole app runs client-side and the hosted copy stores nothing.',
-    theProject:
-      'You keep one master profile with every bullet you might ever use, and the tool selects and weighs them per job. It scores the result against the posting’s terms, tells you which requirements genuinely aren’t covered, and refuses to paper over real gaps. The profile is encrypted in the browser and unlocked with a passphrase.',
-    technical: [
-      'Fully client-side app — no backend behind the hosted page',
-      'Passphrase-derived encryption for the stored profile',
-      'Posting term extraction and coverage scoring',
-      'Single-column, parser-friendly resume output',
-      'Deployed as a static build on GitHub Pages',
-    ],
-    thoughts:
-      'Applying for roles taught me the same tedious lesson over and over: the tailoring matters, and doing it by hand is slow. I also didn’t want to hand my whole employment history to someone else’s server to solve that, so the constraint of keeping everything local shaped most of the design.',
-    links: [{ label: 'Try it Out', href: 'https://brucemoseti.github.io/firstpass-app/' }],
-    accent: 'cue',
-    media: 'grid',
-  },
-  {
-    title: 'resume-lock',
-    tagline: 'One resume format, tailored words, scored against the posting',
-    year: '2026',
-    image: shot('resumelock.webp'),
-    stack: ['TypeScript', 'Browser-local storage', 'Static hosting'],
-    summary:
-      'resume-lock keeps the layout fixed and changes only the words inside it. You get an ATS-style score against a specific posting, plus an explanation of every deduction and what to do about it.',
-    theProject:
-      'The app weighs your resume against the terms in a posting, breaks the score into keywords, parseability, impact, and fit, and lists the requirements your profile genuinely doesn’t mention. Locking the layout is the point: it stays single-column and selectable so parsers can read it, no matter what the content becomes.',
-    technical: [
-      'Deterministic scoring across keywords, parseability, impact, and fit',
-      'Findings view that explains each deduction',
-      'Fixed single-column PDF output built for resume parsers',
-      'All data kept in the browser',
-      'Static deployment with no server component',
-    ],
-    thoughts:
-      'Most resume tools either restyle your document or quietly rewrite your history. I wanted the opposite: leave the structure alone, be honest about gaps, and show the arithmetic behind the score so it’s something you can argue with.',
-    links: [{ label: 'Try it Out', href: 'https://brucemoseti.github.io/resume-lock-app/' }],
-    accent: 'root',
-    media: 'grid',
-  },
-  {
     title: 'Locked In',
     tagline: 'A day planner that schedules with rules you can argue with',
     year: '2026',
@@ -309,30 +260,6 @@ const projects = [
       'This project taught me that performance work is as much about asking the right questions as it is about speed. Measuring carefully made the interesting parts of the system much easier to talk about.',
     links: [{ label: 'Github Profile', href: 'https://github.com/BruceMoseti' }],
     accent: 'sun',
-    media: 'orbit',
-  },
-  {
-    title: 'Personal Website',
-    tagline: 'What you’re looking at right now',
-    year: '2026',
-    image: shot('website.webp'),
-    stack: ['React', 'Vite', 'Framer Motion', 'Lenis', 'GitHub Pages'],
-    summary:
-      'This site is a home for my work, interests, and experiments. I wanted something that felt personal without becoming cluttered — a place that looks considered and still stays easy to navigate.',
-    theProject:
-      'The site brings together selected projects, experience, and contact in one place. I designed it with motion and readability in mind, and kept iterating until the interactions felt smooth instead of noisy.',
-    technical: [
-      'React and Vite for the front end',
-      'Framer Motion and Lenis for motion and smooth scrolling',
-      'Custom cursor and lightweight micro-interactions',
-      'GitHub Pages for deployment',
-    ],
-    thoughts:
-      'Building my own site made me care a lot about small details — pacing, hover states, and how much information to show at once. I’m still refining it, but I’m happy it feels like something I can grow with.',
-    links: [
-      { label: 'Github Repo', href: repoUrl },
-    ],
-    accent: 'cue',
     media: 'orbit',
   },
   {
@@ -475,11 +402,8 @@ const experiences = [
   },
 ]
 
-const skills = [
-  { group: 'Languages', items: ['C++', 'Python', 'Java', 'TypeScript', 'SQL'] },
-  { group: 'AI & Systems', items: ['CUDA', 'TensorRT', 'PyTorch', 'DeepStream', 'Embedded'] },
-  { group: 'Web & Tools', items: ['React', 'Node.js', 'Git', 'Docker', 'AWS'] },
-]
+// The tech strip covers the stack with logos; these are the pieces without one.
+const alsoWorkingWith = ['CUDA', 'TensorRT', 'DeepStream', 'Embedded systems', 'Java', 'SQL', 'Node.js', 'AWS']
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -706,54 +630,62 @@ export default function App() {
         <main id="content">
           <section className="hero" id="top" ref={heroRef}>
             <MotionDiv className="hero-copy" style={{ y: heroY, opacity: heroOpacity }}>
-              <MotionDiv variants={stagger} initial="hidden" animate={ready ? 'show' : 'hidden'}>
-                <MotionP className="hero-kicker" variants={fadeUp}>
-                  Electrical Engineering · NJIT
-                </MotionP>
-                <MotionH1 variants={fadeUp} className="hero-title">
-                  <span>Bruce</span>
-                  <span>Moseti</span>
+              <MotionDiv
+                className="profile-card"
+                variants={stagger}
+                initial="hidden"
+                animate={ready ? 'show' : 'hidden'}
+              >
+                <MotionH1 variants={fadeUp} className="profile-name">
+                  Bruce Moseti
                 </MotionH1>
-                <MotionP className="hero-lead" variants={fadeUp}>
-                  Electrical engineering student building software for systems that need to be measured,
-                  understood, and improved.
+                <MotionP variants={fadeUp} className="profile-location">
+                  <MapPin size={17} aria-hidden="true" />
+                  New Jersey
                 </MotionP>
-                <MotionDiv className="hero-actions" variants={fadeUp}>
-                  <Magnetic>
-                    <a className="btn primary" href="#experience" data-cursor="hover" data-cursor-label="Scroll">
-                      View experience
-                    </a>
-                  </Magnetic>
-                  <Magnetic>
-                    <a className="btn ghost" href={emailUrl} data-cursor="hover" data-cursor-label="Email">
-                      Get in touch
-                    </a>
-                  </Magnetic>
-                </MotionDiv>
-                <MotionDiv className="hero-facts" variants={fadeUp}>
-                  <dl>
-                    {heroFacts.map((fact) => (
-                      <div key={fact.label}>
-                        <dt>{fact.label}</dt>
-                        <dd>{fact.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
+                <MotionP variants={fadeUp} className="profile-role">
+                  Performance Engineering Intern, Edge AI @NVIDIA | Electrical Engineering @NJIT
+                </MotionP>
+                <MotionDiv variants={fadeUp} className="profile-links">
+                  <a href={emailUrl} aria-label="Email Bruce" data-cursor="hover" data-cursor-label="Email">
+                    <Mail size={19} aria-hidden="true" />
+                  </a>
+                  <a
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub"
+                    data-cursor="hover"
+                    data-cursor-label="Open"
+                  >
+                    <BrandIcon slug="github" size={19} colored={false} />
+                  </a>
+                  <a
+                    href={linkedInUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn"
+                    data-cursor="hover"
+                    data-cursor-label="Open"
+                  >
+                    <LinkedInIcon size={18} />
+                  </a>
                 </MotionDiv>
               </MotionDiv>
             </MotionDiv>
-
-            <div className="hero-stage" aria-hidden="true">
-              <div className="hero-ring" />
-              <div className="hero-wave" />
-            </div>
           </section>
 
-          <section className="marquee-band" aria-hidden="true">
-            <div className="marquee-track">
-              <span>Edge AI · Embedded · Software · Research · Automation · Systems · </span>
-              <span>Edge AI · Embedded · Software · Research · Automation · Systems · </span>
-            </div>
+          <section className="section stack" id="stack">
+            <MotionDiv
+              className="section-head"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+            >
+              <h2>What I work with</h2>
+            </MotionDiv>
+            <TechStrip />
           </section>
 
           <section className="section experience" id="experience">
@@ -884,12 +816,8 @@ export default function App() {
                   Outside class, I’ve worked across internships in performance engineering, test automation, and research.
                 </p>
                 <div className="skill-bands">
-                  {skills.map((band) => (
-                    <div key={band.group}>
-                      <h3>{band.group}</h3>
-                      <p>{band.items.join(' · ')}</p>
-                    </div>
-                  ))}
+                  <h3>Also working with</h3>
+                  <p>{alsoWorkingWith.join(' · ')}</p>
                 </div>
               </div>
             </MotionDiv>
