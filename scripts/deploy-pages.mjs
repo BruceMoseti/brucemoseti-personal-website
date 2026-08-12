@@ -19,6 +19,12 @@ mkdirSync(staging, { recursive: true })
 cpSync(dist, staging, { recursive: true })
 writeFileSync(join(staging, '.nojekyll'), '')
 
+// gh-pages holds built output with no package.json, so a Vercel build of this branch would fail.
+writeFileSync(
+  join(staging, 'vercel.json'),
+  `${JSON.stringify({ git: { deploymentEnabled: false } }, null, 2)}\n`,
+)
+
 run('git', ['init'], { cwd: staging })
 run('git', ['checkout', '-b', 'gh-pages'], { cwd: staging })
 run('git', ['add', '-A'], { cwd: staging })
