@@ -30,6 +30,7 @@ const navItems = [
 ]
 
 const shot = (file) => `${import.meta.env.BASE_URL}projects/${file}`
+const logo = (file) => `${import.meta.env.BASE_URL}logos/${file}`
 
 const projects = [
   {
@@ -324,10 +325,11 @@ const experiences = [
   },
   {
     company: 'PSEG',
-    role: 'Technical Solutions Intern',
+    logoSrc: logo('pseg.svg'),
+    role: 'Software Engineer: Technical Solutions',
     kind: 'Internship',
     date: 'Jun 2025 — Aug 2025',
-    summary: 'Technical solutions internship in the energy sector.',
+    summary: 'Software engineering on the technical solutions team at a New Jersey energy utility.',
     bullets: [],
   },
   {
@@ -593,7 +595,7 @@ export default function App() {
         <header className={`topbar${navSolid ? ' solid' : ''}`}>
           <Magnetic>
             <a className="brand" href="#top" data-cursor="hover" aria-label="Bruce Moseti home">
-              <span className="brand-mark">B</span>
+              <span className="brand-mark">BM</span>
               <span className="brand-name">Bruce Moseti</span>
             </a>
           </Magnetic>
