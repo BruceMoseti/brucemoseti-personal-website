@@ -1,18 +1,30 @@
-import { getBrandIcon, readableOnDark } from '../lib/brandIcons'
+import { getBrandIcon, getWordmark, readableOnDark } from '../lib/brandIcons'
 
 export default function BrandIcon({ slug, size = 22, colored = true }) {
   const icon = getBrandIcon(slug)
   if (!icon) return null
 
+  const wordmark = getWordmark(slug)
+  const fill = colored ? readableOnDark(icon.hex) : 'currentColor'
+
+  if (wordmark) {
+    const width = size * (wordmark.scale ?? 1)
+    return (
+      <svg
+        role="img"
+        aria-hidden="true"
+        viewBox={wordmark.viewBox}
+        width={width}
+        height={width / wordmark.ratio}
+        fill={fill}
+      >
+        <path d={icon.path} />
+      </svg>
+    )
+  }
+
   return (
-    <svg
-      role="img"
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      width={size}
-      height={size}
-      fill={colored ? readableOnDark(icon.hex) : 'currentColor'}
-    >
+    <svg role="img" aria-hidden="true" viewBox="0 0 24 24" width={size} height={size} fill={fill}>
       <path d={icon.path} />
     </svg>
   )
