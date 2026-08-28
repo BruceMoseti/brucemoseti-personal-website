@@ -34,6 +34,34 @@ const logo = (file) => `${import.meta.env.BASE_URL}logos/${file}`
 
 const projects = [
   {
+    title: 'GridPulse',
+    tagline: 'Regional electricity demand, measured against the forecast it was meant to follow',
+    year: '2026',
+    image: shot('gridpulse.webp'),
+    stack: ['Python', 'pandas', 'FastAPI', 'PostgreSQL', 'Next.js', 'TypeScript'],
+    summary:
+      'GridPulse tracks how much electricity a U.S. region is using right now, how far that sits from what was forecast a day earlier, and how fast it is changing. I built it because electricity can’t be stored at grid scale, which makes the gap between forecast and reality one of the few numbers that says how a grid is genuinely holding up.',
+    theProject:
+      'Hourly readings for six grid operators arrive from the EIA API as separate demand, forecast, generation and interchange series. A Python pipeline validates them, pivots them into one row per region-hour, and upserts them into PostgreSQL. Because the four series are published on different lags, that upsert coalesces incoming values against stored ones — otherwise re-running over a window erases figures that hadn’t been published the first time. FastAPI computes peak load, load factor, ramp rate and forecast error in SQL, and the dashboard plots actual demand against the day-ahead forecast. The demo runs on generated data so it works without an API key.',
+    technical: [
+      'Ingestion split as fetch, validate, transform, load',
+      'Schema keyed region-then-hour so one index serves every query',
+      'Idempotent coalescing upserts, so scheduled re-runs never lose data',
+      'Peak, load factor, ramp rate and forecast error computed in SQL',
+      'Pipeline verified against a recorded API payload, so tests need no network',
+    ],
+    thoughts:
+      'Coming from electrical engineering, I liked that the interesting figures here aren’t the demand number everyone quotes but the derived ones — how far the forecast missed, how steeply load is ramping. The engineering lesson turned out to be about time rather than data: because the four series arrive on different schedules, my first upsert quietly deleted values I had already collected, so the pipeline looked idempotent and wasn’t. Writing the test that caught it changed how I think about re-running anything against a source that is still moving.',
+    links: [
+      {
+        label: 'Github Repo',
+        href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
+      },
+    ],
+    accent: 'sun',
+    media: 'grid',
+  },
+  {
     title: 'ContextForge',
     tagline: 'RAG over your own documents, with answers that cite their source',
     year: '2026',
