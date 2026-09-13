@@ -39,6 +39,124 @@ const irrigationPaperUrl = paper('solar-powered-smart-irrigation-ucnj-urj-vol7-n
 
 const projects = [
   {
+    title: 'VibeTrace',
+    tagline: 'Does an AI-built app actually do what it was asked to do?',
+    year: '2026',
+    image: shot('vibetrace.webp'),
+    stack: ['TypeScript', 'React', 'Express', 'Playwright', 'SQLite', 'Vite'],
+    summary:
+      'VibeTrace takes a deployed app URL and the plain-English prompt it was built from, then goes and checks whether the app does what was asked. It returns a reliability score, groups the failures it found, and tracks what changed between versions.',
+    theProject:
+      'The spec becomes three to eight user-level acceptance tests — “user can create an account and log in”, “completed tasks stay completed after a refresh” — and headless Chromium drives the app while collecting signals a browser can actually observe: page-load latency, console errors, failed network requests, screenshots. Failures are grouped into categories, each with a short hypothesis about the likely cause. Every run is stored, so the compare view can diff two versions and show which failures were fixed, which are new, and where latency moved.',
+    technical: [
+      'Express and TypeScript API driving headless Chromium through Playwright',
+      'Spec-to-test generation producing tagged, user-level acceptance tests',
+      'Reliability score from correctness, performance, console health and spec coverage',
+      'Failure clustering, each cluster named and given a cause hypothesis',
+      'Every run persisted to SQLite, with a run-to-run diff for regressions',
+      'Deterministic synthetic fallback for when the target cannot be reached',
+    ],
+    thoughts:
+      'The temptation with a tool like this is to let it claim more than it measured, so every run is stamped real or synthetic in the interface. Real means Playwright reached the target and the latency and console errors are genuine browser signals; synthetic means it could not, and the numbers are reproducible stand-ins. Deciding to put that distinction on screen rather than average it away was the part of the design I spent longest on.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/VibeTrace' }],
+    accent: 'cue',
+    media: 'grid',
+  },
+  {
+    title: 'Deep Learning in Asset Pricing',
+    tagline: 'Testing whether nonlinear models beat linear ones out of sample',
+    year: '2026',
+    image: shot('assetpricing.webp'),
+    stack: ['Python', 'scikit-learn', 'XGBoost', 'PyTorch', 'statsmodels', 'pandas'],
+    summary:
+      'Five experiments on 374 characteristic-sorted portfolios of US stocks from 1963 to 2023, asking whether machine learning adds out-of-sample information about equity returns that a regularised linear model does not — and whether whatever survives is still there after trading costs and a correction for how many hypotheses this literature has already tested.',
+    theProject:
+      'An expanding-window walk-forward gives 407 out-of-sample months, and a ladder of models runs on identical data: one momentum signal, OLS, ridge, lasso, elastic net, gradient boosting, a neural network. Rank information coefficient climbs steadily up that ladder, which is the result usually reported. Paired tests on the monthly differences say something else — boosting is indistinguishable from the best linear model, and the neural network is significantly worse. What the ladder is really measuring is sparsity, not nonlinearity.',
+    technical: [
+      'Expanding-window walk-forward across 407 out-of-sample months',
+      'Paired tests on monthly IC differences rather than headline accuracy alone',
+      'Break-even transaction costs measured per model, from 18 to 42 basis points',
+      'Six-factor alpha benchmarked against 212 published predictors',
+      'Every raw input pinned to an immutable commit with its SHA-256 recorded',
+      '98 tests, and a fresh clone that reproduces the full run',
+    ],
+    thoughts:
+      'Two things surprised me. The first is that the model ladder tells opposite stories depending on whether you read the levels or the differences, and only the differences are a real test. The second is that my own hypothesis for one experiment was wrong: I expected the standard asset-pricing test to fall apart as the number of assets approached the number of months, and it does not — it is exact in finite samples, and what breaks is the asymptotic version people reach for instead. Writing up a hypothesis I had disproved myself taught me more than the experiments that worked.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Deep-Learning-in-Asset-Pricing' }],
+    accent: 'grid',
+    media: 'bars',
+  },
+  {
+    title: 'PerfSim',
+    tagline: 'A CPU and memory model that names the bottleneck, then measures the fix',
+    year: '2026',
+    image: shot('perfsim.webp'),
+    stack: ['C++20', 'Python', 'CMake', 'pandas', 'matplotlib'],
+    summary:
+      'PerfSim is a configurable model of a CPU, its caches and its main memory, together with the tooling to run architecture experiments against it. Given a workload and a hypothetical machine, it says which bottleneck is limiting performance and what change would improve it most.',
+    theProject:
+      'Two workloads can look identical in a cache simulator and still need completely different hardware. Random access and pointer chasing both miss L1 on more than 99.5% of accesses and both wait about 185 cycles for memory, yet one takes 16 times longer to do the same work. The difference is overlap: random access sustains 16 misses in flight, pointer chasing sustains exactly one, because each load’s address is the previous load’s result. Quadrupling the miss-handling registers is worth +176% to the first and +0.0% to the second. Hit rates cannot tell them apart, so the model is built around overlap — and rather than stopping at a diagnosis, it runs each candidate change and reports the measured effect.',
+    technical: [
+      'C++20 simulator with a Python layer for experiments, analysis and plots',
+      'Ten parameter sweeps, 372 simulations, in about 18 seconds',
+      'Ranked hardware changes, each with its measured IPC delta and new bottleneck',
+      'Validated against the host machine, including where the model visibly fails',
+      '39 unit tests, run in CI on every push',
+    ],
+    thoughts:
+      'What I took from this is that hit rate, the metric everyone quotes for caches, is close to useless on its own. Two workloads with the same hit rate and the same memory latency differed by 16× in runtime, and the entire gap was memory-level parallelism. I also made the validation report where the model disagrees with real hardware rather than only where it agrees, because a simulator whose limits you cannot see is one you should not trust.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/CPU-Systems-Performance-Simulator' }],
+    accent: 'root',
+    media: 'bars',
+  },
+  {
+    title: 'Digital Logic Verification',
+    tagline: 'Four hardware designs, and the machinery that proves they are right',
+    year: '2026',
+    image: null,
+    stack: ['SystemVerilog', 'Verilog', 'C++', 'Verilator', 'Icarus Verilog', 'Yosys'],
+    summary:
+      'Software can be patched after it ships; a chip cannot. This is four digital circuits — an ALU, a synchronous FIFO, and a FIR filter built two different ways — along with a test suite that attacks them from four independent angles and a check that the test suite would actually catch a real bug.',
+    theProject:
+      'The four angles are chosen so they would not fail the same way: hand-worked cases tied to the specification, an independent C++ model compared against the 8-bit ALU across all 1,048,576 input combinations, randomised FIFO traffic checked against a reference queue on every cycle, and assertions that must hold continuously. Then nine realistic bugs are planted one at a time and the tests are required to fail — all nine are caught, and the report names which mechanism caught each. Synthesis and a static timing analyser I wrote myself turn each design into gates and find its slowest path.',
+    technical: [
+      'Exhaustive proof of the 8-bit ALU: 1,048,576 of 1,048,576 combinations correct',
+      'Mutation testing with nine planted bugs, all nine caught',
+      'Constrained-random FIFO traffic that fails unless it reaches the hard cases',
+      'Static timing analyser written from scratch, checked on hand-calculable circuits',
+      'Verilator against Icarus Verilog on the same seed: identical results, 19.7× faster',
+      'Entirely free, open-source tooling — no vendor licence anywhere in the flow',
+    ],
+    thoughts:
+      'The part worth writing down is the part I got wrong. I pipelined the FIR filter expecting a clear speedup and measured it slower, 1.42 ns against 1.12. Synthesis had quietly merged eight multiplications into one structure ending in a single addition, and my register cut forced eight separate additions instead. Then it turned out the baseline was wrong too: it only measured paths between registers, and the real critical path started at an input pin. Measured properly the pipeline does win, 2.43 ns to 1.42, for 16.5% more area. One design mistake and one measurement mistake, and the measurement mistake was by far the more dangerous.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Digital-Logic-Design-Verification' }],
+    accent: 'cue',
+    media: 'grid',
+  },
+  {
+    title: 'MacroMicro',
+    tagline: 'Cross-asset macro research, engineered to fail loudly',
+    year: '2026',
+    image: shot('macromicro.webp'),
+    stack: ['Python', 'pandas', 'NumPy', 'statsmodels', 'Excel', 'Time series'],
+    summary:
+      'A research platform for studying how interest rates, currencies, equities, commodities, volatility and derivatives positioning move together, and whether those relationships carry information worth acting on. Three hypotheses were written down before any data was touched, tested against ten years, and reported as they came out — including the two that did not work.',
+    theProject:
+      'Most of the engineering exists because of one property of this kind of work: when the code is subtly wrong it does not crash, it returns a confident and plausible wrong number. A misaligned timestamp, or a full-sample average used inside a trailing window, produces a backtest that looks excellent and means nothing. So the pipeline ingests five datasets across four APIs, engineers 164 features, and runs 55 integrity and leakage checks on every execution, aborting if a critical one fails. Positioning reports are withheld until the session after their release, economic series are rebuilt as they were known on each date, and the output is a 26-sheet Excel monitor, 17 charts and a 13-section report.',
+    technical: [
+      '5,107 lines across 16 modules, with 96 tests behind them',
+      '55 integrity and leakage checks; the run exits non-zero on a critical failure',
+      'Point-in-time economics, so no backtest reads a revision published later',
+      'Eight documented data traps that would otherwise produce plausible wrong output',
+      'A fresh clone reproduces every result in 18 seconds, verified in CI',
+    ],
+    thoughts:
+      'The check I am most pleased with is the one that tests the other checks. Rather than claiming no calculation peeks at future data, it multiplies the last forty rows of input by 1.25 and requires every earlier result to come out bit-identical — if anything looked forward, the earlier numbers move and the test fails. The suite then feeds it three deliberately broken calculations to confirm the check can fail at all, because a safety check that cannot fail is worse than no check.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/MacroMicro' }],
+    accent: 'sun',
+    media: 'bars',
+  },
+  {
     title: 'GridPulse',
     tagline: 'Regional electricity demand, measured against the forecast it was meant to follow',
     year: '2026',
@@ -459,7 +577,17 @@ const publications = [
 const SELF_AUTHOR = 'Bruce Moseti'
 
 // The tech strip covers the stack with logos; these are the pieces without one.
-const alsoWorkingWith = ['CUDA', 'TensorRT', 'DeepStream', 'Embedded systems', 'Java', 'SQL', 'Node.js', 'AWS']
+const alsoWorkingWith = [
+  'CUDA',
+  'TensorRT',
+  'DeepStream',
+  'Verilog / SystemVerilog',
+  'Embedded systems',
+  'Java',
+  'SQL',
+  'Node.js',
+  'AWS',
+]
 
 const PROJECTS_SHOWN = 6
 
