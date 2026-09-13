@@ -39,128 +39,6 @@ const irrigationPaperUrl = paper('solar-powered-smart-irrigation-ucnj-urj-vol7-n
 
 const projects = [
   {
-    title: 'Deep Learning in Asset Pricing',
-    tagline: 'Testing whether nonlinear models beat linear ones out of sample',
-    year: '2026',
-    image: shot('assetpricing.webp'),
-    stack: ['Python', 'scikit-learn', 'XGBoost', 'PyTorch', 'statsmodels', 'pandas'],
-    summary:
-      'Five experiments on 374 characteristic-sorted portfolios of US stocks from 1963 to 2023, asking whether machine learning adds out-of-sample information about equity returns that a regularised linear model does not — and whether whatever survives is still there after trading costs and a correction for how many hypotheses this literature has already tested.',
-    theProject:
-      'An expanding-window walk-forward gives 407 out-of-sample months, and a ladder of models runs on identical data: one momentum signal, OLS, ridge, lasso, elastic net, gradient boosting, a neural network. Rank information coefficient climbs steadily up that ladder, which is the result usually reported. Paired tests on the monthly differences say something else — boosting is indistinguishable from the best linear model, and the neural network is significantly worse. What the ladder is really measuring is sparsity, not nonlinearity.',
-    technical: [
-      'Expanding-window walk-forward across 407 out-of-sample months',
-      'Paired tests on monthly IC differences rather than headline accuracy alone',
-      'Break-even transaction costs measured per model, from 18 to 42 basis points',
-      'Six-factor alpha benchmarked against 212 published predictors',
-      'Every raw input pinned to an immutable commit with its SHA-256 recorded',
-      '98 tests, and a fresh clone that reproduces the full run',
-    ],
-    thoughts:
-      'Two things surprised me. The first is that the model ladder tells opposite stories depending on whether you read the levels or the differences, and only the differences are a real test. The second is that my own hypothesis for one experiment was wrong: I expected the standard asset-pricing test to fall apart as the number of assets approached the number of months, and it does not — it is exact in finite samples, and what breaks is the asymptotic version people reach for instead. Writing up a hypothesis I had disproved myself taught me more than the experiments that worked.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Deep-Learning-in-Asset-Pricing' }],
-    accent: 'grid',
-    media: 'bars',
-  },
-  {
-    title: 'PerfSim',
-    tagline: 'A CPU and memory model that names the bottleneck, then measures the fix',
-    year: '2026',
-    image: shot('perfsim.webp'),
-    stack: ['C++20', 'Python', 'CMake', 'pandas', 'matplotlib'],
-    summary:
-      'PerfSim is a configurable model of a CPU, its caches and its main memory, together with the tooling to run architecture experiments against it. Given a workload and a hypothetical machine, it says which bottleneck is limiting performance and what change would improve it most.',
-    theProject:
-      'Two workloads can look identical in a cache simulator and still need completely different hardware. Random access and pointer chasing both miss L1 on more than 99.5% of accesses and both wait about 185 cycles for memory, yet one takes 16 times longer to do the same work. The difference is overlap: random access sustains 16 misses in flight, pointer chasing sustains exactly one, because each load’s address is the previous load’s result. Quadrupling the miss-handling registers is worth +176% to the first and +0.0% to the second. Hit rates cannot tell them apart, so the model is built around overlap — and rather than stopping at a diagnosis, it runs each candidate change and reports the measured effect.',
-    technical: [
-      'C++20 simulator with a Python layer for experiments, analysis and plots',
-      'Ten parameter sweeps, 372 simulations, in about 18 seconds',
-      'Ranked hardware changes, each with its measured IPC delta and new bottleneck',
-      'Validated against the host machine, including where the model visibly fails',
-      '39 unit tests, run in CI on every push',
-    ],
-    thoughts:
-      'What I took from this is that hit rate, the metric everyone quotes for caches, is close to useless on its own. Two workloads with the same hit rate and the same memory latency differed by 16× in runtime, and the entire gap was memory-level parallelism. I also made the validation report where the model disagrees with real hardware rather than only where it agrees, because a simulator whose limits you cannot see is one you should not trust.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/CPU-Systems-Performance-Simulator' }],
-    accent: 'root',
-    media: 'bars',
-  },
-  {
-    title: 'Digital Logic Verification',
-    tagline: 'Four hardware designs, and the machinery that proves they are right',
-    year: '2026',
-    image: null,
-    stack: ['SystemVerilog', 'Verilog', 'C++', 'Verilator', 'Icarus Verilog', 'Yosys'],
-    summary:
-      'Software can be patched after it ships; a chip cannot. This is four digital circuits — an ALU, a synchronous FIFO, and a FIR filter built two different ways — along with a test suite that attacks them from four independent angles and a check that the test suite would actually catch a real bug.',
-    theProject:
-      'The four angles are chosen so they would not fail the same way: hand-worked cases tied to the specification, an independent C++ model compared against the 8-bit ALU across all 1,048,576 input combinations, randomised FIFO traffic checked against a reference queue on every cycle, and assertions that must hold continuously. Then nine realistic bugs are planted one at a time and the tests are required to fail — all nine are caught, and the report names which mechanism caught each. Synthesis and a static timing analyser I wrote myself turn each design into gates and find its slowest path.',
-    technical: [
-      'Exhaustive proof of the 8-bit ALU: 1,048,576 of 1,048,576 combinations correct',
-      'Mutation testing with nine planted bugs, all nine caught',
-      'Constrained-random FIFO traffic that fails unless it reaches the hard cases',
-      'Static timing analyser written from scratch, checked on hand-calculable circuits',
-      'Verilator against Icarus Verilog on the same seed: identical results, 19.7× faster',
-      'Entirely free, open-source tooling — no vendor licence anywhere in the flow',
-    ],
-    thoughts:
-      'The part worth writing down is the part I got wrong. I pipelined the FIR filter expecting a clear speedup and measured it slower, 1.42 ns against 1.12. Synthesis had quietly merged eight multiplications into one structure ending in a single addition, and my register cut forced eight separate additions instead. Then it turned out the baseline was wrong too: it only measured paths between registers, and the real critical path started at an input pin. Measured properly the pipeline does win, 2.43 ns to 1.42, for 16.5% more area. One design mistake and one measurement mistake, and the measurement mistake was by far the more dangerous.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Digital-Logic-Design-Verification' }],
-    accent: 'cue',
-    media: 'grid',
-  },
-  {
-    title: 'MacroMicro',
-    tagline: 'Cross-asset macro research, engineered to fail loudly',
-    year: '2026',
-    image: shot('macromicro.webp'),
-    stack: ['Python', 'pandas', 'NumPy', 'statsmodels', 'Excel', 'Time series'],
-    summary:
-      'A research platform for studying how interest rates, currencies, equities, commodities, volatility and derivatives positioning move together, and whether those relationships carry information worth acting on. Three hypotheses were written down before any data was touched, tested against ten years, and reported as they came out — including the two that did not work.',
-    theProject:
-      'Most of the engineering exists because of one property of this kind of work: when the code is subtly wrong it does not crash, it returns a confident and plausible wrong number. A misaligned timestamp, or a full-sample average used inside a trailing window, produces a backtest that looks excellent and means nothing. So the pipeline ingests five datasets across four APIs, engineers 164 features, and runs 55 integrity and leakage checks on every execution, aborting if a critical one fails. Positioning reports are withheld until the session after their release, economic series are rebuilt as they were known on each date, and the output is a 26-sheet Excel monitor, 17 charts and a 13-section report.',
-    technical: [
-      '5,107 lines across 16 modules, with 96 tests behind them',
-      '55 integrity and leakage checks; the run exits non-zero on a critical failure',
-      'Point-in-time economics, so no backtest reads a revision published later',
-      'Eight documented data traps that would otherwise produce plausible wrong output',
-      'A fresh clone reproduces every result in 18 seconds, verified in CI',
-    ],
-    thoughts:
-      'The check I am most pleased with is the one that tests the other checks. Rather than claiming no calculation peeks at future data, it multiplies the last forty rows of input by 1.25 and requires every earlier result to come out bit-identical — if anything looked forward, the earlier numbers move and the test fails. The suite then feeds it three deliberately broken calculations to confirm the check can fail at all, because a safety check that cannot fail is worse than no check.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/MacroMicro' }],
-    accent: 'sun',
-    media: 'bars',
-  },
-  {
-    title: 'GridPulse',
-    tagline: 'Regional electricity demand, measured against the forecast it was meant to follow',
-    year: '2026',
-    image: shot('gridpulse.webp'),
-    stack: ['Python', 'pandas', 'FastAPI', 'PostgreSQL', 'Next.js', 'TypeScript'],
-    summary:
-      'GridPulse tracks how much electricity a U.S. region is using right now, how far that sits from what was forecast a day earlier, and how fast it is changing. I built it because electricity can’t be stored at grid scale, which makes the gap between forecast and reality one of the few numbers that says how a grid is genuinely holding up.',
-    theProject:
-      'Hourly readings for six grid operators arrive from the EIA API as separate demand, forecast, generation and interchange series. A Python pipeline validates them, pivots them into one row per region-hour, and upserts them into PostgreSQL. Because the four series are published on different lags, that upsert coalesces incoming values against stored ones — otherwise re-running over a window erases figures that hadn’t been published the first time. FastAPI computes peak load, load factor, ramp rate and forecast error in SQL, and the dashboard plots actual demand against the day-ahead forecast. The demo runs on generated data so it works without an API key.',
-    technical: [
-      'Ingestion split as fetch, validate, transform, load',
-      'Schema keyed region-then-hour so one index serves every query',
-      'Idempotent coalescing upserts, so scheduled re-runs never lose data',
-      'Peak, load factor, ramp rate and forecast error computed in SQL',
-      'Pipeline verified against a recorded API payload, so tests need no network',
-    ],
-    thoughts:
-      'Coming from electrical engineering, I liked that the interesting figures here aren’t the demand number everyone quotes but the derived ones — how far the forecast missed, how steeply load is ramping. The engineering lesson turned out to be about time rather than data: because the four series arrive on different schedules, my first upsert quietly deleted values I had already collected, so the pipeline looked idempotent and wasn’t. Writing the test that caught it changed how I think about re-running anything against a source that is still moving.',
-    links: [
-      {
-        label: 'Github Repo',
-        href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
-      },
-    ],
-    accent: 'sun',
-    media: 'grid',
-  },
-  {
     title: 'ContextForge',
     tagline: 'RAG over your own documents, with answers that cite their source',
     year: '2026',
@@ -205,6 +83,84 @@ const projects = [
     links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/cutout-ml' }],
     accent: 'sun',
     media: 'bars',
+  },
+  {
+    title: 'GridPulse',
+    tagline: 'Regional electricity demand, measured against the forecast it was meant to follow',
+    year: '2026',
+    image: shot('gridpulse.webp'),
+    stack: ['Python', 'pandas', 'FastAPI', 'PostgreSQL', 'Next.js', 'TypeScript'],
+    summary:
+      'GridPulse tracks how much electricity a U.S. region is using right now, how far that sits from what was forecast a day earlier, and how fast it is changing. I built it because electricity can’t be stored at grid scale, which makes the gap between forecast and reality one of the few numbers that says how a grid is genuinely holding up.',
+    theProject:
+      'Hourly readings for six grid operators arrive from the EIA API as separate demand, forecast, generation and interchange series. A Python pipeline validates them, pivots them into one row per region-hour, and upserts them into PostgreSQL. Because the four series are published on different lags, that upsert coalesces incoming values against stored ones — otherwise re-running over a window erases figures that hadn’t been published the first time. FastAPI computes peak load, load factor, ramp rate and forecast error in SQL, and the dashboard plots actual demand against the day-ahead forecast. The demo runs on generated data so it works without an API key.',
+    technical: [
+      'Ingestion split as fetch, validate, transform, load',
+      'Schema keyed region-then-hour so one index serves every query',
+      'Idempotent coalescing upserts, so scheduled re-runs never lose data',
+      'Peak, load factor, ramp rate and forecast error computed in SQL',
+      'Pipeline verified against a recorded API payload, so tests need no network',
+    ],
+    thoughts:
+      'Coming from electrical engineering, I liked that the interesting figures here aren’t the demand number everyone quotes but the derived ones — how far the forecast missed, how steeply load is ramping. The engineering lesson turned out to be about time rather than data: because the four series arrive on different schedules, my first upsert quietly deleted values I had already collected, so the pipeline looked idempotent and wasn’t. Writing the test that caught it changed how I think about re-running anything against a source that is still moving.',
+    links: [
+      {
+        label: 'Github Repo',
+        href: 'https://github.com/BruceMoseti/energy-grid-performance-dashboard',
+      },
+    ],
+    accent: 'sun',
+    media: 'grid',
+  },
+  {
+    title: 'PerfSim',
+    tagline: 'A CPU and memory model that names the bottleneck, then measures the fix',
+    year: '2026',
+    image: shot('perfsim.webp'),
+    stack: ['C++20', 'Python', 'CMake', 'pandas', 'matplotlib'],
+    summary:
+      'PerfSim is a configurable model of a CPU, its caches and its main memory, together with the tooling to run architecture experiments against it. Given a workload and a hypothetical machine, it says which bottleneck is limiting performance and what change would improve it most.',
+    theProject:
+      'Two workloads can look identical in a cache simulator and still need completely different hardware. Random access and pointer chasing both miss L1 on more than 99.5% of accesses and both wait about 185 cycles for memory, yet one takes 16 times longer to do the same work. The difference is overlap: random access sustains 16 misses in flight, pointer chasing sustains exactly one, because each load’s address is the previous load’s result. Quadrupling the miss-handling registers is worth +176% to the first and +0.0% to the second. Hit rates cannot tell them apart, so the model is built around overlap — and rather than stopping at a diagnosis, it runs each candidate change and reports the measured effect.',
+    technical: [
+      'C++20 simulator with a Python layer for experiments, analysis and plots',
+      'Ten parameter sweeps, 372 simulations, in about 18 seconds',
+      'Ranked hardware changes, each with its measured IPC delta and new bottleneck',
+      'Validated against the host machine, including where the model visibly fails',
+      '39 unit tests, run in CI on every push',
+    ],
+    thoughts:
+      'What I took from this is that hit rate, the metric everyone quotes for caches, is close to useless on its own. Two workloads with the same hit rate and the same memory latency differed by 16× in runtime, and the entire gap was memory-level parallelism. I also made the validation report where the model disagrees with real hardware rather than only where it agrees, because a simulator whose limits you cannot see is one you should not trust.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/CPU-Systems-Performance-Simulator' }],
+    accent: 'root',
+    media: 'bars',
+  },
+  {
+    title: 'Pocket Physics',
+    tagline: 'Billiards simulated properly, then made 7,600× cheaper — and playable in a browser tab',
+    year: '2026',
+    image: shot('cueai.webp'),
+    stack: ['Python', 'C++', 'PyTorch', 'ONNX', 'JavaScript', 'NumPy'],
+    summary:
+      'A physics simulator for billiards, a closed-form solution that replaces it, and a learned model that corrects what the closed form misses. Predicting where the balls come to rest costs about 4.6 seconds a shot by numerical integration; this gets it to 0.60 ms — and, more usefully, tells you in advance which of its own predictions to trust. There is a browser game against a search-based bot running the same physics.',
+    theProject:
+      'The browser is not running a lookalike engine. The JavaScript physics is a hand port of the Python simulator, and the port is measured rather than asserted: 35 reference shots — draw, follow, english off two rails, thin cuts, full sixteen-ball breaks — are replayed in Node and compared ball by ball against the Python run, with a worst disagreement of 1.2 × 10⁻³ mm. CI runs that check on every push and refuses to deploy the page if the two drift apart. The opponent is a search rather than a learned model: it solves every ball-and-pocket pair in closed form, discards what is blocked, and spends its whole budget simulating the survivors.',
+    technical: [
+      'Closed-form solver plus a learned residual: 0.60 ms a shot against 4.6 s of integration',
+      'Parity harness replaying 35 reference shots from Python in the browser, checked in CI',
+      'Twenty headless bot-versus-bot games asserting no two balls ever share space',
+      'Real-cursor interaction tests for pointer capture, drag threshold and keyboard focus',
+      'A live inspector tracing cue-ball speed against contact-point slip mid-shot',
+      'Plays from a single offline HTML file, with no server and no build step',
+    ],
+    thoughts:
+      'The result I keep coming back to is the one that looks worst. Gradient boosting posts the higher R², but it gets there by hedging toward the middle of the table on shots nobody can predict, and pays 64 mm for it on the shots that actually matter. The residual formulation wins where physics is nearly sufficient and loses where a collision has to be modelled, because it is anchored to a baseline with no ball-ball contact model at all. Splitting the average apart to see that was worth more than any improvement to the number itself.',
+    links: [
+      { label: 'Play it', href: 'https://brucemoseti.github.io/cueai/#play' },
+      { label: 'Github Repo', href: 'https://github.com/BruceMoseti/cueai' },
+    ],
+    accent: 'cue',
+    media: 'orbit',
   },
   {
     title: 'ForgeIDE',
@@ -253,6 +209,77 @@ const projects = [
     media: 'grid',
   },
   {
+    title: 'Digital Logic Verification',
+    tagline: 'Four hardware designs, and the machinery that proves they are right',
+    year: '2026',
+    image: null,
+    stack: ['SystemVerilog', 'Verilog', 'C++', 'Verilator', 'Icarus Verilog', 'Yosys'],
+    summary:
+      'Software can be patched after it ships; a chip cannot. This is four digital circuits — an ALU, a synchronous FIFO, and a FIR filter built two different ways — along with a test suite that attacks them from four independent angles and a check that the test suite would actually catch a real bug.',
+    theProject:
+      'The four angles are chosen so they would not fail the same way: hand-worked cases tied to the specification, an independent C++ model compared against the 8-bit ALU across all 1,048,576 input combinations, randomised FIFO traffic checked against a reference queue on every cycle, and assertions that must hold continuously. Then nine realistic bugs are planted one at a time and the tests are required to fail — all nine are caught, and the report names which mechanism caught each. Synthesis and a static timing analyser I wrote myself turn each design into gates and find its slowest path.',
+    technical: [
+      'Exhaustive proof of the 8-bit ALU: 1,048,576 of 1,048,576 combinations correct',
+      'Mutation testing with nine planted bugs, all nine caught',
+      'Constrained-random FIFO traffic that fails unless it reaches the hard cases',
+      'Static timing analyser written from scratch, checked on hand-calculable circuits',
+      'Verilator against Icarus Verilog on the same seed: identical results, 19.7× faster',
+      'Entirely free, open-source tooling — no vendor licence anywhere in the flow',
+    ],
+    thoughts:
+      'The part worth writing down is the part I got wrong. I pipelined the FIR filter expecting a clear speedup and measured it slower, 1.42 ns against 1.12. Synthesis had quietly merged eight multiplications into one structure ending in a single addition, and my register cut forced eight separate additions instead. Then it turned out the baseline was wrong too: it only measured paths between registers, and the real critical path started at an input pin. Measured properly the pipeline does win, 2.43 ns to 1.42, for 16.5% more area. One design mistake and one measurement mistake, and the measurement mistake was by far the more dangerous.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Digital-Logic-Design-Verification' }],
+    accent: 'cue',
+    media: 'grid',
+  },
+  {
+    title: 'Deep Learning in Asset Pricing',
+    tagline: 'Testing whether nonlinear models beat linear ones out of sample',
+    year: '2026',
+    image: shot('assetpricing.webp'),
+    stack: ['Python', 'scikit-learn', 'XGBoost', 'PyTorch', 'statsmodels', 'pandas'],
+    summary:
+      'Five experiments on 374 characteristic-sorted portfolios of US stocks from 1963 to 2023, asking whether machine learning adds out-of-sample information about equity returns that a regularised linear model does not — and whether whatever survives is still there after trading costs and a correction for how many hypotheses this literature has already tested.',
+    theProject:
+      'An expanding-window walk-forward gives 407 out-of-sample months, and a ladder of models runs on identical data: one momentum signal, OLS, ridge, lasso, elastic net, gradient boosting, a neural network. Rank information coefficient climbs steadily up that ladder, which is the result usually reported. Paired tests on the monthly differences say something else — boosting is indistinguishable from the best linear model, and the neural network is significantly worse. What the ladder is really measuring is sparsity, not nonlinearity.',
+    technical: [
+      'Expanding-window walk-forward across 407 out-of-sample months',
+      'Paired tests on monthly IC differences rather than headline accuracy alone',
+      'Break-even transaction costs measured per model, from 18 to 42 basis points',
+      'Six-factor alpha benchmarked against 212 published predictors',
+      'Every raw input pinned to an immutable commit with its SHA-256 recorded',
+      '98 tests, and a fresh clone that reproduces the full run',
+    ],
+    thoughts:
+      'Two things surprised me. The first is that the model ladder tells opposite stories depending on whether you read the levels or the differences, and only the differences are a real test. The second is that my own hypothesis for one experiment was wrong: I expected the standard asset-pricing test to fall apart as the number of assets approached the number of months, and it does not — it is exact in finite samples, and what breaks is the asymptotic version people reach for instead. Writing up a hypothesis I had disproved myself taught me more than the experiments that worked.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Deep-Learning-in-Asset-Pricing' }],
+    accent: 'grid',
+    media: 'bars',
+  },
+  {
+    title: 'MacroMicro',
+    tagline: 'Cross-asset macro research, engineered to fail loudly',
+    year: '2026',
+    image: shot('macromicro.webp'),
+    stack: ['Python', 'pandas', 'NumPy', 'statsmodels', 'Excel', 'Time series'],
+    summary:
+      'A research platform for studying how interest rates, currencies, equities, commodities, volatility and derivatives positioning move together, and whether those relationships carry information worth acting on. Three hypotheses were written down before any data was touched, tested against ten years, and reported as they came out — including the two that did not work.',
+    theProject:
+      'Most of the engineering exists because of one property of this kind of work: when the code is subtly wrong it does not crash, it returns a confident and plausible wrong number. A misaligned timestamp, or a full-sample average used inside a trailing window, produces a backtest that looks excellent and means nothing. So the pipeline ingests five datasets across four APIs, engineers 164 features, and runs 55 integrity and leakage checks on every execution, aborting if a critical one fails. Positioning reports are withheld until the session after their release, economic series are rebuilt as they were known on each date, and the output is a 26-sheet Excel monitor, 17 charts and a 13-section report.',
+    technical: [
+      '5,107 lines across 16 modules, with 96 tests behind them',
+      '55 integrity and leakage checks; the run exits non-zero on a critical failure',
+      'Point-in-time economics, so no backtest reads a revision published later',
+      'Eight documented data traps that would otherwise produce plausible wrong output',
+      'A fresh clone reproduces every result in 18 seconds, verified in CI',
+    ],
+    thoughts:
+      'The check I am most pleased with is the one that tests the other checks. Rather than claiming no calculation peeks at future data, it multiplies the last forty rows of input by 1.25 and requires every earlier result to come out bit-identical — if anything looked forward, the earlier numbers move and the test fails. The suite then feeds it three deliberately broken calculations to confirm the check can fail at all, because a safety check that cannot fail is worse than no check.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/MacroMicro' }],
+    accent: 'sun',
+    media: 'bars',
+  },
+  {
     title: 'ParcelProof',
     tagline: 'What on-chain provenance actually costs',
     year: '2026',
@@ -297,51 +324,6 @@ const projects = [
     links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/lob-simulator' }],
     accent: 'grid',
     media: 'bars',
-  },
-  {
-    title: 'Locked In',
-    tagline: 'A day planner that schedules with rules you can argue with',
-    year: '2026',
-    image: shot('lockedin.webp'),
-    stack: ['JavaScript', 'HTML', 'Offline-first', 'Single-file app'],
-    summary:
-      'Locked In takes a messy list of to-dos and lays out the day using human assumptions about when work actually gets done — then holds you to the plan. No sign-up, no install, no backend.',
-    theProject:
-      'Parsing your list can be model-assisted, but placement never is: every block is decided in ordinary code and carries a reason you can read, like “post-lunch dip — low-focus work while attention is lowest.” Lock a block and it becomes immovable. Start a timer and finishing records what the task actually took, which is the only honest input a re-plan has.',
-    technical: [
-      'Deterministic, rule-based scheduler rather than model-generated plans',
-      'Explicit constraints: protected lunch, morning deep work, capped focus blocks',
-      'Re-plan from now, routing around locked and completed blocks',
-      'Runs entirely offline from a single HTML file',
-      'Deployed on GitHub Pages',
-    ],
-    thoughts:
-      'A language model is good at reading a messy to-do list and bad at scheduling, because scheduling is constraint satisfaction and the same input should produce the same day every time. Splitting those two jobs apart is the whole idea behind this project, and it made the result something I actually trust.',
-    links: [{ label: 'Try it Out', href: 'https://brucemoseti.github.io/locked-in/' }],
-    accent: 'sun',
-    media: 'orbit',
-  },
-  {
-    title: 'CueAI',
-    tagline: 'A physics-informed AI billiards simulation',
-    year: '2026',
-    image: null,
-    stack: ['Python', 'C++', 'PyTorch', 'ONNX', 'PyQt', 'NumPy'],
-    summary:
-      'CueAI is a simulation platform that combines classical mechanics with machine learning to predict billiard-ball trajectories. I built it to explore how numerical methods and learned models can work together on a problem that’s both visual and technical.',
-    theProject:
-      'The system models collisions and motion, then uses prediction models to estimate trajectories. I cared about making the pipeline understandable end to end — from physics assumptions to training and visualization — so the results weren’t just accurate, but inspectable.',
-    technical: [
-      'Python and C++ for simulation and core logic',
-      'PyTorch / ONNX for trajectory prediction',
-      'NumPy for numerical methods and analysis',
-      'PyQt for interactive visualization',
-    ],
-    thoughts:
-      'This project was a good excuse to slow down and connect theory with something playable. I spent a lot of time thinking about what “good enough” prediction looks like when the physics is messy, and how to keep the architecture clean enough that I could keep iterating without breaking everything.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/cueai' }],
-    accent: 'cue',
-    media: 'orbit',
   },
   {
     title: 'Solar Energy Irrigation System',
@@ -395,6 +377,29 @@ const projects = [
     ],
     accent: 'root',
     media: 'grid',
+  },
+  {
+    title: 'Locked In',
+    tagline: 'A day planner that schedules with rules you can argue with',
+    year: '2026',
+    image: shot('lockedin.webp'),
+    stack: ['JavaScript', 'HTML', 'Offline-first', 'Single-file app'],
+    summary:
+      'Locked In takes a messy list of to-dos and lays out the day using human assumptions about when work actually gets done — then holds you to the plan. No sign-up, no install, no backend.',
+    theProject:
+      'Parsing your list can be model-assisted, but placement never is: every block is decided in ordinary code and carries a reason you can read, like “post-lunch dip — low-focus work while attention is lowest.” Lock a block and it becomes immovable. Start a timer and finishing records what the task actually took, which is the only honest input a re-plan has.',
+    technical: [
+      'Deterministic, rule-based scheduler rather than model-generated plans',
+      'Explicit constraints: protected lunch, morning deep work, capped focus blocks',
+      'Re-plan from now, routing around locked and completed blocks',
+      'Runs entirely offline from a single HTML file',
+      'Deployed on GitHub Pages',
+    ],
+    thoughts:
+      'A language model is good at reading a messy to-do list and bad at scheduling, because scheduling is constraint satisfaction and the same input should produce the same day every time. Splitting those two jobs apart is the whole idea behind this project, and it made the result something I actually trust.',
+    links: [{ label: 'Try it Out', href: 'https://brucemoseti.github.io/locked-in/' }],
+    accent: 'sun',
+    media: 'orbit',
   },
 ]
 
