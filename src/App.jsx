@@ -212,7 +212,7 @@ const projects = [
     title: 'Digital Logic Verification',
     tagline: 'Four hardware designs, and the machinery that proves they are right',
     year: '2026',
-    image: null,
+    image: shot('digitallogic.webp'),
     stack: ['SystemVerilog', 'Verilog', 'C++', 'Verilator', 'Icarus Verilog', 'Yosys'],
     summary:
       'Software can be patched after it ships; a chip cannot. This is four digital circuits — an ALU, a synchronous FIFO, and a FIR filter built two different ways — along with a test suite that attacks them from four independent angles and a check that the test suite would actually catch a real bug.',
