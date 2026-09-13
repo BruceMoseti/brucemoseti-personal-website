@@ -39,30 +39,6 @@ const irrigationPaperUrl = paper('solar-powered-smart-irrigation-ucnj-urj-vol7-n
 
 const projects = [
   {
-    title: 'VibeTrace',
-    tagline: 'Does an AI-built app actually do what it was asked to do?',
-    year: '2026',
-    image: shot('vibetrace.webp'),
-    stack: ['TypeScript', 'React', 'Express', 'Playwright', 'SQLite', 'Vite'],
-    summary:
-      'VibeTrace takes a deployed app URL and the plain-English prompt it was built from, then goes and checks whether the app does what was asked. It returns a reliability score, groups the failures it found, and tracks what changed between versions.',
-    theProject:
-      'The spec becomes three to eight user-level acceptance tests — “user can create an account and log in”, “completed tasks stay completed after a refresh” — and headless Chromium drives the app while collecting signals a browser can actually observe: page-load latency, console errors, failed network requests, screenshots. Failures are grouped into categories, each with a short hypothesis about the likely cause. Every run is stored, so the compare view can diff two versions and show which failures were fixed, which are new, and where latency moved.',
-    technical: [
-      'Express and TypeScript API driving headless Chromium through Playwright',
-      'Spec-to-test generation producing tagged, user-level acceptance tests',
-      'Reliability score from correctness, performance, console health and spec coverage',
-      'Failure clustering, each cluster named and given a cause hypothesis',
-      'Every run persisted to SQLite, with a run-to-run diff for regressions',
-      'Deterministic synthetic fallback for when the target cannot be reached',
-    ],
-    thoughts:
-      'The temptation with a tool like this is to let it claim more than it measured, so every run is stamped real or synthetic in the interface. Real means Playwright reached the target and the latency and console errors are genuine browser signals; synthetic means it could not, and the numbers are reproducible stand-ins. Deciding to put that distinction on screen rather than average it away was the part of the design I spent longest on.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/VibeTrace' }],
-    accent: 'cue',
-    media: 'grid',
-  },
-  {
     title: 'Deep Learning in Asset Pricing',
     tagline: 'Testing whether nonlinear models beat linear ones out of sample',
     year: '2026',
@@ -365,28 +341,6 @@ const projects = [
       'This project was a good excuse to slow down and connect theory with something playable. I spent a lot of time thinking about what “good enough” prediction looks like when the physics is messy, and how to keep the architecture clean enough that I could keep iterating without breaking everything.',
     links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/cueai' }],
     accent: 'cue',
-    media: 'orbit',
-  },
-  {
-    title: 'DeepSun',
-    tagline: 'AI imaging analysis and GPU-accelerated systems',
-    year: '2025',
-    image: null,
-    stack: ['Python', 'GPU profiling', 'Imaging analysis', 'Reporting'],
-    summary:
-      'DeepSun grew out of research work around imaging analysis and GPU-accelerated pipelines. I used it to practice measuring performance, spotting bottlenecks, and turning findings into clearer next steps.',
-    theProject:
-      'The work involved analyzing imaging and performance-style datasets, building reporting tools, and evaluating where AI and GPU approaches could help. Presenting the results clearly — to both technical and non-technical audiences — was part of the project, not an afterthought.',
-    technical: [
-      'Python for analysis and reporting',
-      'GPU-oriented workflows for inference and profiling',
-      'Automated metric tracking to support research priorities',
-      'Presentation-ready summaries for stakeholders',
-    ],
-    thoughts:
-      'This project taught me that performance work is as much about asking the right questions as it is about speed. Measuring carefully made the interesting parts of the system much easier to talk about.',
-    links: [{ label: 'Github Profile', href: 'https://github.com/BruceMoseti' }],
-    accent: 'sun',
     media: 'orbit',
   },
   {
