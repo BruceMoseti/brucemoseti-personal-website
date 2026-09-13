@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { Mail } from 'lucide-react'
 import BrandIcon, { LinkedInIcon } from './components/BrandIcon'
@@ -1022,10 +1022,10 @@ export default function App() {
                   <h3>{item.title}</h3>
                   <p className="publication-authors">
                     {item.authors.map((author, position) => (
-                      <span key={author} className={author === SELF_AUTHOR ? 'is-self' : undefined}>
-                        {author}
+                      <Fragment key={author}>
+                        <span className={author === SELF_AUTHOR ? 'is-self' : undefined}>{author}</span>
                         {position < item.authors.length - 1 ? ', ' : ''}
-                      </span>
+                      </Fragment>
                     ))}
                   </p>
                   <p className="publication-venue">
