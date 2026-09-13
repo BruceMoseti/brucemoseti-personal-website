@@ -25,12 +25,17 @@ const repoUrl = 'https://github.com/BruceMoseti/brucemoseti-personal-website'
 const navItems = [
   { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#work' },
+  { label: 'Publications', href: '#publications' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
 ]
 
 const shot = (file) => `${import.meta.env.BASE_URL}projects/${file}`
 const logo = (file) => `${import.meta.env.BASE_URL}logos/${file}`
+const paper = (file) => `${import.meta.env.BASE_URL}papers/${file}`
+
+const irrigationRepoUrl = 'https://github.com/BruceMoseti/Real-Time-IoT-Irrigation-Monitoring-Control-System'
+const irrigationPaperUrl = paper('solar-powered-smart-irrigation-ucnj-urj-vol7-no1.pdf')
 
 const projects = [
   {
@@ -268,24 +273,26 @@ const projects = [
   },
   {
     title: 'Solar Energy Irrigation System',
-    tagline: 'Sensors, control logic, and performance data for irrigation automation',
+    tagline: 'Off-grid irrigation that waters on soil-moisture feedback, and publishes what it sees',
     year: '2024',
     image: shot('solar.webp'),
-    stack: ['Raspberry Pi', 'Sensors', 'Python', 'AutoCAD'],
+    stack: ['Arduino', 'Raspberry Pi', 'Python', 'Sensors', 'Solar power'],
     summary:
-      'An undergraduate research project integrating sensors, control logic, and data collection for solar-powered irrigation automation. I worked on design, testing, and documenting what improved across iterations.',
+      'An NSF-funded undergraduate research project: a fully automated watering system that runs entirely on solar power, decides when to water from live soil-moisture readings, and streams temperature and humidity to a real-time dashboard. Four of us built and tested the whole thing — hardware, wiring, control code, power system and data pipeline — and published the result.',
     theProject:
-      'The system was tested across multiple scenarios to evaluate stability, efficiency, and reliability under changing conditions. I focused on connecting hardware behavior with usable performance data.',
+      'A capacitive moisture sensor array reads each pot. An Arduino compares those readings against a threshold programmed for the plant and drives the pump through a Smart Pump Shield when a pot falls below it, routing water through a five-way pipe and a DC 12 V four-way valve, then switching off once the target moisture is reached — so the system delivers what the soil needs rather than a fixed dose. A Raspberry Pi aggregates DHT22 temperature and humidity readings and publishes them to a live dashboard. A 20 W solar panel runs the system during the day and charges a 20,000 mAh battery that carries it overnight, which is what makes the design deployable with no grid connection at all.',
     technical: [
-      'Sensor integration and control logic',
-      'Python for data collection and analysis',
-      'AutoCAD for design documentation',
-      'Iterative testing across multiple scenarios',
+      'Arduino control logic with moisture thresholds and real-time-clock scheduling',
+      'Capacitive soil-moisture sensor array and a DHT22 temperature and humidity module',
+      'Raspberry Pi acquisition in Python, handling the read failures DHT22 sensors throw',
+      '20 W solar panel and 20,000 mAh battery for continuous off-grid operation',
+      'Published in the UCNJ Undergraduate Research Journal under NSF IRAP grant 1832425',
     ],
     thoughts:
-      'This was one of the first projects where hardware, software, and documentation all had to stay in sync. Seeing how small design tradeoffs showed up in real measurements was a useful lesson.',
+      'This was the first project where hardware, software, documentation and a deadline all had to stay in sync, and what stuck with me is how much of the write-up ended up being about what we did not measure. We never ran a controlled comparison against manual watering, so the water saving is inferred from the literature rather than demonstrated by us. Saying that plainly in the paper was more useful than the stronger claim would have been.',
     links: [
-      { label: 'Github Repo', href: 'https://github.com/BruceMoseti/IRAP---INFUSING-RESEARCH-AS-PEDAGOGY' },
+      { label: 'Publication', href: '#publications', internal: true },
+      { label: 'Github Repo', href: irrigationRepoUrl },
     ],
     accent: 'grid',
     media: 'bars',
@@ -422,6 +429,35 @@ const experiences = [
   },
 ]
 
+const publications = [
+  {
+    title: 'Development of a Solar-Powered Smart Irrigation System with Real-Time Data Monitoring',
+    authors: ['Roger Fortunato', 'Steven Herrera', 'Bruce Moseti', 'Kevin Noriega'],
+    venue: 'UCNJ Union College of Union County, NJ — Undergraduate Research Journal',
+    issue: 'Volume 7, No. 1 · Fall 2024 · pp. 34–37',
+    year: '2024',
+    kind: 'Peer-reviewed journal',
+    summary:
+      'A fully automated plant and crop watering system that runs entirely on solar power, waters from live soil-moisture readings, and streams temperature and humidity to a real-time dashboard. The paper covers the design, the build, and what the system achieved through testing — including the comparisons we deliberately did not claim to have run.',
+    facts: [
+      { term: 'Funding', detail: 'National Science Foundation, IRAP grant 1832425' },
+      { term: 'Mentor', detail: 'Academic Specialist Nabil Kabakibi, STEM Division, UCNJ' },
+      {
+        term: 'My role',
+        detail:
+          'Co-author and one of four student researchers — the build and wiring, Arduino control logic, Raspberry Pi data acquisition, testing, and the write-up',
+      },
+    ],
+    links: [
+      { label: 'Read the Paper (PDF)', href: irrigationPaperUrl },
+      { label: 'Project Repo', href: irrigationRepoUrl },
+    ],
+  },
+]
+
+// Marks the author's own name in a publication's author list.
+const SELF_AUTHOR = 'Bruce Moseti'
+
 // The tech strip covers the stack with logos; these are the pieces without one.
 const alsoWorkingWith = ['CUDA', 'TensorRT', 'DeepStream', 'Embedded systems', 'Java', 'SQL', 'Node.js', 'AWS']
 
@@ -470,6 +506,24 @@ function ProjectMedia({ project, active }) {
       </div>
       <span className="media-wordmark">{project.title}</span>
     </div>
+  )
+}
+
+// Links that point at another section of this page must not open a new tab.
+function ProjectLink({ link, className = 'btn small ghost' }) {
+  const external = !link.internal
+
+  return (
+    <a
+      className={className}
+      href={link.href}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      data-cursor="hover"
+      data-cursor-label={external ? 'Open' : 'Jump'}
+    >
+      {link.label}
+    </a>
   )
 }
 
@@ -543,17 +597,7 @@ function ProjectCard({ project, index, hovered, onHover }) {
               {open ? 'Show Less' : 'Show More'}
             </button>
             {project.links?.map((link) => (
-              <a
-                key={`${link.label}-${link.href}`}
-                className="btn small ghost"
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-cursor="hover"
-                data-cursor-label="Open"
-              >
-                {link.label}
-              </a>
+              <ProjectLink key={`${link.label}-${link.href}`} link={link} />
             ))}
           </div>
         </div>
@@ -816,6 +860,73 @@ export default function App() {
                 </button>
               </div>
             ) : null}
+          </section>
+
+          <section className="section publications" id="publications">
+            <MotionDiv
+              className="section-head"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+            >
+              <p className="eyebrow">Publications</p>
+              <h2>Research I’ve published.</h2>
+              <p className="section-note">
+                Peer-reviewed work I co-authored. The full paper is attached to each entry.
+              </p>
+            </MotionDiv>
+
+            <ol className="publication-list">
+              {publications.map((item, index) => (
+                <MotionLi
+                  className="publication-card"
+                  key={item.title}
+                  initial={{ opacity: 0, y: 26 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.7, delay: Math.min(index, 4) * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <p className="publication-meta">
+                    <span>{item.year}</span>
+                    <span>{item.kind}</span>
+                  </p>
+                  <h3>{item.title}</h3>
+                  <p className="publication-authors">
+                    {item.authors.map((author, position) => (
+                      <span key={author} className={author === SELF_AUTHOR ? 'is-self' : undefined}>
+                        {author}
+                        {position < item.authors.length - 1 ? ', ' : ''}
+                      </span>
+                    ))}
+                  </p>
+                  <p className="publication-venue">
+                    {item.venue}
+                    <span>{item.issue}</span>
+                  </p>
+                  <p className="publication-summary">{item.summary}</p>
+
+                  <dl className="publication-facts">
+                    {item.facts.map((fact) => (
+                      <div key={fact.term}>
+                        <dt>{fact.term}</dt>
+                        <dd>{fact.detail}</dd>
+                      </div>
+                    ))}
+                  </dl>
+
+                  <div className="publication-actions">
+                    {item.links.map((link, position) => (
+                      <ProjectLink
+                        key={`${link.label}-${link.href}`}
+                        link={link}
+                        className={`btn small ${position === 0 ? 'primary' : 'ghost'}`}
+                      />
+                    ))}
+                  </div>
+                </MotionLi>
+              ))}
+            </ol>
           </section>
 
           <section className="section about" id="about">

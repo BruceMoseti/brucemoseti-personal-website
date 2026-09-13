@@ -26,6 +26,11 @@ const knowledge = [
     answer: 'At CIBM3 Labs I supported research with datasets, Python analysis workflows, and clear presentations of outcomes.',
   },
   {
+    keys: ['publication', 'paper', 'published', 'research journal', 'irrigation'],
+    answer:
+      'I co-authored “Development of a Solar-Powered Smart Irrigation System with Real-Time Data Monitoring” in the UCNJ Undergraduate Research Journal, Vol. 7 No. 1 (Fall 2024), funded by NSF IRAP grant 1832425. The full PDF is in the Publications section.',
+  },
+  {
     keys: ['project', 'cueai', 'rootline', 'deepsun'],
     answer: 'My projects span simulation, systems tooling, dashboards, and edge inference experiments. Check the Work section for links.',
   },
@@ -57,7 +62,10 @@ export default function BruceLLM() {
     { role: 'assistant', text: 'Hi — I’m BruceLLM. Ask about my background, projects, or how to reach me.' },
   ])
   const endRef = useRef(null)
-  const suggestions = useMemo(() => ['Who are you?', 'Experience?', 'Projects?', 'How to contact?'], [])
+  const suggestions = useMemo(
+    () => ['Who are you?', 'Experience?', 'Projects?', 'Publications?', 'How to contact?'],
+    [],
+  )
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
