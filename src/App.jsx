@@ -416,10 +416,10 @@ const experiences = [
   {
     company: 'Nokia',
     logo: 'nokia',
-    role: 'Optoelectronics Test Development Co-op',
+    role: 'Software Engineering: Optoelectronics Test Development Co-op',
     kind: 'Co-op',
     date: 'Sep 2025 — Apr 2026',
-    summary: 'Test development for optoelectronics hardware.',
+    summary: 'Software engineering for optoelectronics hardware test development.',
     bullets: [],
   },
   {
