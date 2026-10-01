@@ -32,14 +32,19 @@ const knowledge = [
       'I co-authored “Development of a Solar-Powered Smart Irrigation System with Real-Time Data Monitoring” in the UCNJ Undergraduate Research Journal, Vol. 7 No. 1 (Fall 2024), funded by NSF IRAP grant 1832425. The full PDF is in the Publications section.',
   },
   {
-    keys: ['perfsim', 'macromicro', 'verilog', 'asset pricing', 'billiards', 'pocket physics'],
+    keys: ['flashbus', 'atlas', 'kernelforge', 'latency', 'distributed', 'gpu kernel', 'triton'],
     answer:
-      'Recent builds: PerfSim (a CPU and memory hierarchy simulator in C++), Pocket Physics (billiards simulation with a learned residual, playable in the browser), MacroMicro (cross-asset macro research), a digital logic design and verification flow, and a study of machine learning in cross-sectional asset pricing.',
+      'Newest builds: FlashBus (a low-latency C++20 event broker at 13.9 µs p99 with zero steady-state allocation), Atlas (a fault-tolerant job scheduler in Go, verified under randomized fault injection), and KernelForge (a GPU kernel autotuner that verifies every candidate before it times it).',
+  },
+  {
+    keys: ['perfsim', 'verilog', 'asset pricing', 'billiards', 'pocket physics'],
+    answer:
+      'Also recent: PerfSim (a CPU and memory hierarchy simulator in C++), Pocket Physics (billiards simulation with a learned residual, playable in the browser), a digital logic design and verification flow, and a study of machine learning in cross-sectional asset pricing.',
   },
   {
     keys: ['project', 'cueai', 'rootline', 'contextforge'],
     answer:
-      'My projects span AI tooling, inference serving, systems simulation, and data pipelines. ContextForge, CutoutML and GridPulse are the ones I point people at first — they are in the Projects section with links.',
+      'My projects span low-latency systems, distributed infrastructure, GPU and AI tooling, and data pipelines. FlashBus, Atlas and ContextForge are the ones I point people at first — they are in the Projects section with links.',
   },
   {
     keys: ['skill', 'stack', 'tech'],

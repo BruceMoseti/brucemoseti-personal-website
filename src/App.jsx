@@ -39,6 +39,54 @@ const irrigationPaperUrl = paper('solar-powered-smart-irrigation-ucnj-urj-vol7-n
 
 const projects = [
   {
+    title: 'FlashBus',
+    tagline: 'A low-latency event broker built around the p99.9, not the average',
+    year: '2026',
+    image: shot('flashbus.webp'),
+    stack: ['C++20', 'Boost.Asio', 'Lock-free SPSC', 'GoogleTest', 'Python', 'CMake'],
+    summary:
+      'Message brokers are usually tuned for average throughput. In anything latency-sensitive — market-data distribution, telemetry fan-out, anywhere a stalled consumer must not stall the rest — what matters is the p99.9, and what ruins it is allocation on the hot path, lock contention, syscalls per message, and unbounded queues that turn overload into a crash. FlashBus is a broker built the other way round: 11.8 µs p50 and 13.9 µs p99 end to end over real TCP sockets, with zero heap allocation once it is running.',
+    theProject:
+      'Events move from publishers to subscribers over TCP through lock-free single-producer/single-consumer ring buffers, a 32-byte binary wire protocol, and bounded queues everywhere. There is no multi-producer queue anywhere in the system — extra publishers scale by getting an ingress ring each — which makes single-writer ownership a correctness constraint rather than a performance note. The zero-allocation claim is verified by a counting operator new across a 300-second, 90-million-event soak rather than asserted, and the whole engine runs clean under ASan, UBSan and TSan.',
+    technical: [
+      '11.8 µs p50 / 13.9 µs p99 across encode, two socket hops, routing, fan-out and decode',
+      'Zero heap allocations over a 300-second, 90-million-event run, with nothing dropped',
+      '13–144× lower p99 than a mutex-and-queue baseline, flat across a 32× payload range',
+      '1.6 M events/s fanned out to four subscribers with no loss; 5.19 M msg/s broker ceiling',
+      '91 tests in 8 suites across 4 sanitizer configurations in CI, including protocol fuzzing',
+      'Latency figures drawn from histogram buckets by script, with no hard-coded data in the plots',
+    ],
+    thoughts:
+      'Two things from this one stuck. ASan found a real out-of-bounds write that every unsanitised run had passed over — the suite was green and the bug was there the whole time. And a steady_clock read costs 24.5 ns on this host, which is about what an SPSC handoff costs, so any benchmark timing the handoff is partly timing the clock; those run twice, once with no clock in the loop. For the same reason I make no microarchitectural claims anywhere in the repository, because this host has no PMU and I would only be guessing.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/FlashBus' }],
+    accent: 'root',
+    media: 'bars',
+  },
+  {
+    title: 'Atlas',
+    tagline: 'A fault-tolerant job scheduler that counts its own duplicate executions',
+    year: '2026',
+    image: shot('atlas.webp'),
+    stack: ['Go', 'gRPC', 'Protobuf', 'SQLite', 'Distributed systems'],
+    summary:
+      'Atlas takes jobs with CPU and memory requirements, places them across a fleet of worker machines, and keeps them running when the machines, processes and network underneath them fail. Plenty of systems call themselves fault tolerant without saying which faults, how quickly they are detected, or what recovery costs. This one states its guarantees precisely enough that they could be proven wrong, then builds the machinery that tries to prove them wrong.',
+    theProject:
+      'The constraint every scheduler has to confront is that a distributed system cannot tell a worker that died before doing the work from one that died after. Atlas resolves that honestly — at-least-once execution with attempt-scoped leases, idempotent control-plane operations, and a stale-write rejection path — and then measures the duplicate executions that result instead of claiming there are none. Nine invariants are stated formally, checked mechanically against the database after every test run, and gated in CI under randomized SIGKILL, SIGSTOP, scheduler restarts and replayed RPCs.',
+    technical: [
+      '50 injected faults, zero jobs lost: 3,000 of 3,000 completed across 24,484 audited transitions',
+      '16 duplicate executions observed and published, because that is what at-least-once means',
+      'Least-loaded placement at 4.5× lower mean queue wait than round-robin on an identical seed',
+      '21 µs placement decisions at 10,000 workers — roughly 47,000 per second on one core',
+      'Bucketed-deque queue: 159 ns pops at depth 100, 166 ns at depth 100,000',
+      '107 tests, 26 of them against real gRPC, SQLite and worker processes, all race-clean',
+    ],
+    thoughts:
+      'The most useful result was a feature working against itself. Priority aging exists so batch jobs do not starve, and it has a cap so aging cannot swamp priority outright. But once every queued job has waited long enough to saturate that cap, both classes sit at the same effective priority and the scheduler collapses back to FIFO — the cap is not a safety rail on aging, it is the dial that decides how much aging you actually get. I would not have found that by reasoning about it, only by running the orderings side by side.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Atlas' }],
+    accent: 'cue',
+    media: 'grid',
+  },
+  {
     title: 'ContextForge',
     tagline: 'RAG over your own documents, with answers that cite their source',
     year: '2026',
@@ -60,6 +108,30 @@ const projects = [
     links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/contextforge' }],
     accent: 'cue',
     media: 'grid',
+  },
+  {
+    title: 'KernelForge',
+    tagline: 'A GPU kernel autotuner that never ranks an unverified kernel',
+    year: '2026',
+    image: shot('kernelforge.webp'),
+    stack: ['Python', 'Triton', 'CUDA', 'PyTorch', 'PTX', 'SQLite'],
+    summary:
+      'A Triton or CUDA kernel’s performance is decided almost entirely by five integers — tile shape, warp count, pipeline depth — and the right values depend on both the problem shape and the specific GPU. KernelForge generates those configurations from the properties of the attached device, rejects the ones the hardware cannot run with a stated reason for each, verifies every survivor against a PyTorch reference before timing it, and caches the winner so a serving process never re-tunes.',
+    theProject:
+      'The ordering matters more than it sounds. A tuner that ranks on latency alone will happily select a kernel whose boundary mask is broken, because skipping work is fast. So verification is a separate pass that runs before the benchmark loop, and no code path reaches the ranking without passing it — a structural property rather than a matter of care. A 432-point GEMM grid reduces to 180 feasible and 48 measured candidates with every rejection attributed to a named rule, and the rules are split into hardware limits and efficiency heuristics so the judgement calls are not dressed up as physics.',
+    technical: [
+      'Search space derived from device limits, so the filters transfer across GPUs',
+      'Correctness gate before ranking: a wrong configuration is recorded with its error, never timed',
+      'Kernels lowered to PTX for sm80 and sm90 in ordinary CPU CI, with MMA selection asserted from the PTX',
+      '482 tests, 293 of them GPU-gated and skipped with a stated reason',
+      'Bias and GELU folded into the GEMM epilogue: DRAM traffic falls from 548 to 204 MiB',
+      'Arithmetic intensity reported against the device ridge point, so a memory-bound shape is called finished',
+    ],
+    thoughts:
+      'The decision I am most comfortable defending is the one that leaves numbers out. This was built on a machine with no GPU, so rather than quote latencies measured somewhere I could not re-run, the repository ships the measurement apparatus and no latency figures at all — every number is produced on your own hardware and stamped with the GPU, driver, CUDA, PyTorch and Triton versions it came from. Triton and clang will both lower a kernel to PTX for a named architecture with no driver present, which makes instruction-level correctness an ordinary CI check and meant the interesting verification did not need a device either.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/KernelO' }],
+    accent: 'sun',
+    media: 'bars',
   },
   {
     title: 'CutoutML',
@@ -254,29 +326,6 @@ const projects = [
       'Two things surprised me. The first is that the model ladder tells opposite stories depending on whether you read the levels or the differences, and only the differences are a real test. The second is that my own hypothesis for one experiment was wrong: I expected the standard asset-pricing test to fall apart as the number of assets approached the number of months, and it does not — it is exact in finite samples, and what breaks is the asymptotic version people reach for instead. Writing up a hypothesis I had disproved myself taught me more than the experiments that worked.',
     links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Deep-Learning-in-Asset-Pricing' }],
     accent: 'grid',
-    media: 'bars',
-  },
-  {
-    title: 'MacroMicro',
-    tagline: 'Cross-asset macro research, engineered to fail loudly',
-    year: '2026',
-    image: shot('macromicro.webp'),
-    stack: ['Python', 'pandas', 'NumPy', 'statsmodels', 'Excel', 'Time series'],
-    summary:
-      'A research platform for studying how interest rates, currencies, equities, commodities, volatility and derivatives positioning move together, and whether those relationships carry information worth acting on. Three hypotheses were written down before any data was touched, tested against ten years, and reported as they came out — including the two that did not work.',
-    theProject:
-      'Most of the engineering exists because of one property of this kind of work: when the code is subtly wrong it does not crash, it returns a confident and plausible wrong number. A misaligned timestamp, or a full-sample average used inside a trailing window, produces a backtest that looks excellent and means nothing. So the pipeline ingests five datasets across four APIs, engineers 164 features, and runs 55 integrity and leakage checks on every execution, aborting if a critical one fails. Positioning reports are withheld until the session after their release, economic series are rebuilt as they were known on each date, and the output is a 26-sheet Excel monitor, 17 charts and a 13-section report.',
-    technical: [
-      '5,107 lines across 16 modules, with 96 tests behind them',
-      '55 integrity and leakage checks; the run exits non-zero on a critical failure',
-      'Point-in-time economics, so no backtest reads a revision published later',
-      'Eight documented data traps that would otherwise produce plausible wrong output',
-      'A fresh clone reproduces every result in 18 seconds, verified in CI',
-    ],
-    thoughts:
-      'The check I am most pleased with is the one that tests the other checks. Rather than claiming no calculation peeks at future data, it multiplies the last forty rows of input by 1.25 and requires every earlier result to come out bit-identical — if anything looked forward, the earlier numbers move and the test fails. The suite then feeds it three deliberately broken calculations to confirm the check can fail at all, because a safety check that cannot fail is worse than no check.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/MacroMicro' }],
-    accent: 'sun',
     media: 'bars',
   },
   {
