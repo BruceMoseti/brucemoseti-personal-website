@@ -87,6 +87,30 @@ const projects = [
     media: 'grid',
   },
   {
+    title: 'KernelForge',
+    tagline: 'A GPU kernel autotuner that never ranks an unverified kernel',
+    year: '2026',
+    image: shot('kernelforge.webp'),
+    stack: ['Python', 'Triton', 'CUDA', 'PyTorch', 'PTX', 'SQLite'],
+    summary:
+      'A Triton or CUDA kernel’s performance is decided almost entirely by five integers — tile shape, warp count, pipeline depth — and the right values depend on both the problem shape and the specific GPU. KernelForge generates those configurations from the properties of the attached device, rejects the ones the hardware cannot run with a stated reason for each, verifies every survivor against a PyTorch reference before timing it, and caches the winner so a serving process never re-tunes.',
+    theProject:
+      'The ordering matters more than it sounds. A tuner that ranks on latency alone will happily select a kernel whose boundary mask is broken, because skipping work is fast. So verification is a separate pass that runs before the benchmark loop, and no code path reaches the ranking without passing it — a structural property rather than a matter of care. A 432-point GEMM grid reduces to 180 feasible and 48 measured candidates with every rejection attributed to a named rule, and the rules are split into hardware limits and efficiency heuristics so the judgement calls are not dressed up as physics.',
+    technical: [
+      'Search space derived from device limits, so the filters transfer across GPUs',
+      'Correctness gate before ranking: a wrong configuration is recorded with its error, never timed',
+      'Kernels lowered to PTX for sm80 and sm90 in ordinary CPU CI, with MMA selection asserted from the PTX',
+      '482 tests, 293 of them GPU-gated and skipped with a stated reason',
+      'Bias and GELU folded into the GEMM epilogue: DRAM traffic falls from 548 to 204 MiB',
+      'Arithmetic intensity reported against the device ridge point, so a memory-bound shape is called finished',
+    ],
+    thoughts:
+      'The decision I am most comfortable defending is the one that leaves numbers out. This was built on a machine with no GPU, so rather than quote latencies measured somewhere I could not re-run, the repository ships the measurement apparatus and no latency figures at all — every number is produced on your own hardware and stamped with the GPU, driver, CUDA, PyTorch and Triton versions it came from. Triton and clang will both lower a kernel to PTX for a named architecture with no driver present, which makes instruction-level correctness an ordinary CI check and meant the interesting verification did not need a device either.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/KernelO' }],
+    accent: 'sun',
+    media: 'bars',
+  },
+  {
     title: 'ContextForge',
     tagline: 'RAG over your own documents, with answers that cite their source',
     year: '2026',
@@ -110,28 +134,55 @@ const projects = [
     media: 'grid',
   },
   {
-    title: 'KernelForge',
-    tagline: 'A GPU kernel autotuner that never ranks an unverified kernel',
+    title: 'Pocket Physics',
+    tagline: 'Billiards simulated properly, then made 7,600× cheaper — and playable in a browser tab',
     year: '2026',
-    image: shot('kernelforge.webp'),
-    stack: ['Python', 'Triton', 'CUDA', 'PyTorch', 'PTX', 'SQLite'],
+    image: shot('cueai.webp'),
+    stack: ['Python', 'C++', 'PyTorch', 'ONNX', 'JavaScript', 'NumPy'],
     summary:
-      'A Triton or CUDA kernel’s performance is decided almost entirely by five integers — tile shape, warp count, pipeline depth — and the right values depend on both the problem shape and the specific GPU. KernelForge generates those configurations from the properties of the attached device, rejects the ones the hardware cannot run with a stated reason for each, verifies every survivor against a PyTorch reference before timing it, and caches the winner so a serving process never re-tunes.',
+      'A physics simulator for billiards, a closed-form solution that replaces it, and a learned model that corrects what the closed form misses. Predicting where the balls come to rest costs about 4.6 seconds a shot by numerical integration; this gets it to 0.60 ms — and, more usefully, tells you in advance which of its own predictions to trust. There is a browser game against a search-based bot running the same physics.',
     theProject:
-      'The ordering matters more than it sounds. A tuner that ranks on latency alone will happily select a kernel whose boundary mask is broken, because skipping work is fast. So verification is a separate pass that runs before the benchmark loop, and no code path reaches the ranking without passing it — a structural property rather than a matter of care. A 432-point GEMM grid reduces to 180 feasible and 48 measured candidates with every rejection attributed to a named rule, and the rules are split into hardware limits and efficiency heuristics so the judgement calls are not dressed up as physics.',
+      'The browser is not running a lookalike engine. The JavaScript physics is a hand port of the Python simulator, and the port is measured rather than asserted: 35 reference shots — draw, follow, english off two rails, thin cuts, full sixteen-ball breaks — are replayed in Node and compared ball by ball against the Python run, with a worst disagreement of 1.2 × 10⁻³ mm. CI runs that check on every push and refuses to deploy the page if the two drift apart. The opponent is a search rather than a learned model: it solves every ball-and-pocket pair in closed form, discards what is blocked, and spends its whole budget simulating the survivors.',
     technical: [
-      'Search space derived from device limits, so the filters transfer across GPUs',
-      'Correctness gate before ranking: a wrong configuration is recorded with its error, never timed',
-      'Kernels lowered to PTX for sm80 and sm90 in ordinary CPU CI, with MMA selection asserted from the PTX',
-      '482 tests, 293 of them GPU-gated and skipped with a stated reason',
-      'Bias and GELU folded into the GEMM epilogue: DRAM traffic falls from 548 to 204 MiB',
-      'Arithmetic intensity reported against the device ridge point, so a memory-bound shape is called finished',
+      'Closed-form solver plus a learned residual: 0.60 ms a shot against 4.6 s of integration',
+      'Parity harness replaying 35 reference shots from Python in the browser, checked in CI',
+      'Twenty headless bot-versus-bot games asserting no two balls ever share space',
+      'Real-cursor interaction tests for pointer capture, drag threshold and keyboard focus',
+      'A live inspector tracing cue-ball speed against contact-point slip mid-shot',
+      'Plays from a single offline HTML file, with no server and no build step',
     ],
     thoughts:
-      'The decision I am most comfortable defending is the one that leaves numbers out. This was built on a machine with no GPU, so rather than quote latencies measured somewhere I could not re-run, the repository ships the measurement apparatus and no latency figures at all — every number is produced on your own hardware and stamped with the GPU, driver, CUDA, PyTorch and Triton versions it came from. Triton and clang will both lower a kernel to PTX for a named architecture with no driver present, which makes instruction-level correctness an ordinary CI check and meant the interesting verification did not need a device either.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/KernelO' }],
-    accent: 'sun',
-    media: 'bars',
+      'The result I keep coming back to is the one that looks worst. Gradient boosting posts the higher R², but it gets there by hedging toward the middle of the table on shots nobody can predict, and pays 64 mm for it on the shots that actually matter. The residual formulation wins where physics is nearly sufficient and loses where a collision has to be modelled, because it is anchored to a baseline with no ball-ball contact model at all. Splitting the average apart to see that was worth more than any improvement to the number itself.',
+    links: [
+      { label: 'Play it', href: 'https://brucemoseti.github.io/cueai/#play' },
+      { label: 'Github Repo', href: 'https://github.com/BruceMoseti/cueai' },
+    ],
+    accent: 'cue',
+    media: 'orbit',
+  },
+  {
+    title: 'Digital Logic Verification',
+    tagline: 'Four hardware designs, and the machinery that proves they are right',
+    year: '2026',
+    image: shot('digitallogic.webp'),
+    stack: ['SystemVerilog', 'Verilog', 'C++', 'Verilator', 'Icarus Verilog', 'Yosys'],
+    summary:
+      'Software can be patched after it ships; a chip cannot. This is four digital circuits — an ALU, a synchronous FIFO, and a FIR filter built two different ways — along with a test suite that attacks them from four independent angles and a check that the test suite would actually catch a real bug.',
+    theProject:
+      'The four angles are chosen so they would not fail the same way: hand-worked cases tied to the specification, an independent C++ model compared against the 8-bit ALU across all 1,048,576 input combinations, randomised FIFO traffic checked against a reference queue on every cycle, and assertions that must hold continuously. Then nine realistic bugs are planted one at a time and the tests are required to fail — all nine are caught, and the report names which mechanism caught each. Synthesis and a static timing analyser I wrote myself turn each design into gates and find its slowest path.',
+    technical: [
+      'Exhaustive proof of the 8-bit ALU: 1,048,576 of 1,048,576 combinations correct',
+      'Mutation testing with nine planted bugs, all nine caught',
+      'Constrained-random FIFO traffic that fails unless it reaches the hard cases',
+      'Static timing analyser written from scratch, checked on hand-calculable circuits',
+      'Verilator against Icarus Verilog on the same seed: identical results, 19.7× faster',
+      'Entirely free, open-source tooling — no vendor licence anywhere in the flow',
+    ],
+    thoughts:
+      'The part worth writing down is the part I got wrong. I pipelined the FIR filter expecting a clear speedup and measured it slower, 1.42 ns against 1.12. Synthesis had quietly merged eight multiplications into one structure ending in a single addition, and my register cut forced eight separate additions instead. Then it turned out the baseline was wrong too: it only measured paths between registers, and the real critical path started at an input pin. Measured properly the pipeline does win, 2.43 ns to 1.42, for 16.5% more area. One design mistake and one measurement mistake, and the measurement mistake was by far the more dangerous.',
+    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Digital-Logic-Design-Verification' }],
+    accent: 'cue',
+    media: 'grid',
   },
   {
     title: 'CutoutML',
@@ -208,33 +259,6 @@ const projects = [
     media: 'bars',
   },
   {
-    title: 'Pocket Physics',
-    tagline: 'Billiards simulated properly, then made 7,600× cheaper — and playable in a browser tab',
-    year: '2026',
-    image: shot('cueai.webp'),
-    stack: ['Python', 'C++', 'PyTorch', 'ONNX', 'JavaScript', 'NumPy'],
-    summary:
-      'A physics simulator for billiards, a closed-form solution that replaces it, and a learned model that corrects what the closed form misses. Predicting where the balls come to rest costs about 4.6 seconds a shot by numerical integration; this gets it to 0.60 ms — and, more usefully, tells you in advance which of its own predictions to trust. There is a browser game against a search-based bot running the same physics.',
-    theProject:
-      'The browser is not running a lookalike engine. The JavaScript physics is a hand port of the Python simulator, and the port is measured rather than asserted: 35 reference shots — draw, follow, english off two rails, thin cuts, full sixteen-ball breaks — are replayed in Node and compared ball by ball against the Python run, with a worst disagreement of 1.2 × 10⁻³ mm. CI runs that check on every push and refuses to deploy the page if the two drift apart. The opponent is a search rather than a learned model: it solves every ball-and-pocket pair in closed form, discards what is blocked, and spends its whole budget simulating the survivors.',
-    technical: [
-      'Closed-form solver plus a learned residual: 0.60 ms a shot against 4.6 s of integration',
-      'Parity harness replaying 35 reference shots from Python in the browser, checked in CI',
-      'Twenty headless bot-versus-bot games asserting no two balls ever share space',
-      'Real-cursor interaction tests for pointer capture, drag threshold and keyboard focus',
-      'A live inspector tracing cue-ball speed against contact-point slip mid-shot',
-      'Plays from a single offline HTML file, with no server and no build step',
-    ],
-    thoughts:
-      'The result I keep coming back to is the one that looks worst. Gradient boosting posts the higher R², but it gets there by hedging toward the middle of the table on shots nobody can predict, and pays 64 mm for it on the shots that actually matter. The residual formulation wins where physics is nearly sufficient and loses where a collision has to be modelled, because it is anchored to a baseline with no ball-ball contact model at all. Splitting the average apart to see that was worth more than any improvement to the number itself.',
-    links: [
-      { label: 'Play it', href: 'https://brucemoseti.github.io/cueai/#play' },
-      { label: 'Github Repo', href: 'https://github.com/BruceMoseti/cueai' },
-    ],
-    accent: 'cue',
-    media: 'orbit',
-  },
-  {
     title: 'ForgeIDE',
     tagline: 'A collaborative cloud IDE that runs your project in the browser',
     year: '2026',
@@ -278,30 +302,6 @@ const projects = [
       'This project sits between engineering and communication. Good tooling isn’t about collecting more data — it’s about helping someone understand what’s happening while they’re under pressure. I kept coming back to one rule: never show a conclusion without showing why.',
     links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/rootline' }],
     accent: 'root',
-    media: 'grid',
-  },
-  {
-    title: 'Digital Logic Verification',
-    tagline: 'Four hardware designs, and the machinery that proves they are right',
-    year: '2026',
-    image: shot('digitallogic.webp'),
-    stack: ['SystemVerilog', 'Verilog', 'C++', 'Verilator', 'Icarus Verilog', 'Yosys'],
-    summary:
-      'Software can be patched after it ships; a chip cannot. This is four digital circuits — an ALU, a synchronous FIFO, and a FIR filter built two different ways — along with a test suite that attacks them from four independent angles and a check that the test suite would actually catch a real bug.',
-    theProject:
-      'The four angles are chosen so they would not fail the same way: hand-worked cases tied to the specification, an independent C++ model compared against the 8-bit ALU across all 1,048,576 input combinations, randomised FIFO traffic checked against a reference queue on every cycle, and assertions that must hold continuously. Then nine realistic bugs are planted one at a time and the tests are required to fail — all nine are caught, and the report names which mechanism caught each. Synthesis and a static timing analyser I wrote myself turn each design into gates and find its slowest path.',
-    technical: [
-      'Exhaustive proof of the 8-bit ALU: 1,048,576 of 1,048,576 combinations correct',
-      'Mutation testing with nine planted bugs, all nine caught',
-      'Constrained-random FIFO traffic that fails unless it reaches the hard cases',
-      'Static timing analyser written from scratch, checked on hand-calculable circuits',
-      'Verilator against Icarus Verilog on the same seed: identical results, 19.7× faster',
-      'Entirely free, open-source tooling — no vendor licence anywhere in the flow',
-    ],
-    thoughts:
-      'The part worth writing down is the part I got wrong. I pipelined the FIR filter expecting a clear speedup and measured it slower, 1.42 ns against 1.12. Synthesis had quietly merged eight multiplications into one structure ending in a single addition, and my register cut forced eight separate additions instead. Then it turned out the baseline was wrong too: it only measured paths between registers, and the real critical path started at an input pin. Measured properly the pipeline does win, 2.43 ns to 1.42, for 16.5% more area. One design mistake and one measurement mistake, and the measurement mistake was by far the more dangerous.',
-    links: [{ label: 'Github Repo', href: 'https://github.com/BruceMoseti/Digital-Logic-Design-Verification' }],
-    accent: 'cue',
     media: 'grid',
   },
   {
@@ -426,29 +426,6 @@ const projects = [
     ],
     accent: 'root',
     media: 'grid',
-  },
-  {
-    title: 'Locked In',
-    tagline: 'A day planner that schedules with rules you can argue with',
-    year: '2026',
-    image: shot('lockedin.webp'),
-    stack: ['JavaScript', 'HTML', 'Offline-first', 'Single-file app'],
-    summary:
-      'Locked In takes a messy list of to-dos and lays out the day using human assumptions about when work actually gets done — then holds you to the plan. No sign-up, no install, no backend.',
-    theProject:
-      'Parsing your list can be model-assisted, but placement never is: every block is decided in ordinary code and carries a reason you can read, like “post-lunch dip — low-focus work while attention is lowest.” Lock a block and it becomes immovable. Start a timer and finishing records what the task actually took, which is the only honest input a re-plan has.',
-    technical: [
-      'Deterministic, rule-based scheduler rather than model-generated plans',
-      'Explicit constraints: protected lunch, morning deep work, capped focus blocks',
-      'Re-plan from now, routing around locked and completed blocks',
-      'Runs entirely offline from a single HTML file',
-      'Deployed on GitHub Pages',
-    ],
-    thoughts:
-      'A language model is good at reading a messy to-do list and bad at scheduling, because scheduling is constraint satisfaction and the same input should produce the same day every time. Splitting those two jobs apart is the whole idea behind this project, and it made the result something I actually trust.',
-    links: [{ label: 'Try it Out', href: 'https://brucemoseti.github.io/locked-in/' }],
-    accent: 'sun',
-    media: 'orbit',
   },
 ]
 

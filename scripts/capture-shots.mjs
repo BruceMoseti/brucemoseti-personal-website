@@ -1,8 +1,9 @@
 import { chromium } from 'playwright'
 import { mkdir } from 'node:fs/promises'
 
+// Playwright writes PNG; convert to the .webp the cards load before committing.
 const targets = [
-  { url: 'https://brucemoseti.github.io/locked-in/', out: 'public/projects/lockedin.png' },
+  { url: 'https://brucemoseti.github.io/cueai/#play', out: 'public/projects/cueai.png' },
 ]
 
 await mkdir('public/projects', { recursive: true })
